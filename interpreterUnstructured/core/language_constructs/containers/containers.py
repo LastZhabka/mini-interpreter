@@ -3,8 +3,8 @@ import sys
 
 sys.path.append(os.getcwd())
 
-from interpreter.core.language_constructs.objects.object_types import Value
-from interpreter.core.language_constructs.data_types.data_types import ValueFactory, Numerical
+from interpreterUnstructured.core.language_constructs.objects.object_types import Value
+from interpreterUnstructured.core.language_constructs.data_types.data_types import ValueFactory, Numerical
 
 from abc import ABC, abstractmethod
 

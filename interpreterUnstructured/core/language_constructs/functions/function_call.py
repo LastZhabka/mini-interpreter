@@ -3,8 +3,8 @@ import os
 
 sys.path.append(os.getcwd())
 
-from interpreter.core.language_constructs.functions.function import Function 
-from interpreter.core.program_state.program_state_ import ProgramState
+from interpreterUnstructured.core.language_constructs.functions.function import Function 
+from interpreterUnstructured.core.program_state.program_state_ import ProgramState
 
 class FunctionCall:
     

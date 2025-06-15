@@ -2,9 +2,9 @@ import os
 import sys
 sys.path.append(os.getcwd())
 
-from interpreter.core.program_state.logger.logger import Logger
-from interpreter.core.program_state.symbol_table.symbol_table import SymbolTable, VariableName
-from interpreter.core.language_constructs.data_types.data_types import Value
+from interpreterUnstructured.core.program_state.logger.logger import Logger
+from interpreterUnstructured.core.program_state.symbol_table.symbol_table import SymbolTable, VariableName
+from interpreterUnstructured.core.language_constructs.data_types.data_types import Value
 
 
 class ProgramState:

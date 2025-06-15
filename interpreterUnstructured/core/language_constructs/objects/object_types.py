@@ -2,7 +2,7 @@ import os
 import sys
 sys.path.append(os.getcwd())
 from abc import ABC
-from interpreter.core.language_constructs.data_types.data_types import *
+from interpreterUnstructured.core.language_constructs.data_types.data_types import *
 
 class Object(ABC):
     pass 

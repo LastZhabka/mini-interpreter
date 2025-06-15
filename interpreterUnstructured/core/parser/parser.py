@@ -3,11 +3,11 @@ import sys
 
 sys.path.append(os.getcwd())
 
-from interpreter.core.language_constructs.containers.containers import ContainerFactory
-from interpreter.core.language_constructs.data_types.data_types import ValueFactory
-from interpreter.core.language_constructs.functions.function import FunctionFactory
-from interpreter.core.language_constructs.functions.function_call import FunctionCallFactory
-from interpreter.core.language_constructs.objects.object_types import ObjectFactory, VariableNameFactory
+from interpreterUnstructured.core.language_constructs.containers.containers import ContainerFactory
+from interpreterUnstructured.core.language_constructs.data_types.data_types import ValueFactory
+from interpreterUnstructured.core.language_constructs.functions.function import FunctionFactory
+from interpreterUnstructured.core.language_constructs.functions.function_call import FunctionCallFactory
+from interpreterUnstructured.core.language_constructs.objects.object_types import ObjectFactory, VariableNameFactory
 
 
 class Parser:

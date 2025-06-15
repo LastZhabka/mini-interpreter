@@ -2,10 +2,10 @@ import os
 import sys
 sys.path.append(os.getcwd())
 
-from interpreter.core.language_constructs.containers.containers import *
-from interpreter.core.language_constructs.data_types.data_types import *
-from interpreter.core.language_constructs.objects.object_types import *
-from interpreter.core.program_state.program_state_ import ProgramState
+from interpreterUnstructured.core.language_constructs.containers.containers import *
+from interpreterUnstructured.core.language_constructs.data_types.data_types import *
+from interpreterUnstructured.core.language_constructs.objects.object_types import *
+from interpreterUnstructured.core.program_state.program_state_ import ProgramState
 
 class Arguments:
 

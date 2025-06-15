@@ -2,9 +2,9 @@ import os
 import sys
 sys.path.append(os.getcwd())
 
-from interpreter.core.program_state.program_state_ import ProgramState
-from interpreter.core.parser.parser import Parser
-from interpreter.core.language_constructs.functions.function_call import FunctionCall
+from interpreterUnstructured.core.program_state.program_state_ import ProgramState
+from interpreterUnstructured.core.parser.parser import Parser
+from interpreterUnstructured.core.language_constructs.functions.function_call import FunctionCall
 
 class Program:
     def __init__(self, target_code: list[str]):
