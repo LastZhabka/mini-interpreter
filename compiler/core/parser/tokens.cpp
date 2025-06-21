@@ -2,125 +2,78 @@
 #include <typeinfo>
 #include <cassert>
 #include <memory>
-using namespace std;
+#include "tokens.h"
 
-class Token {
-    private:
-        int position;
-    public:
-        Token(int position) : position(position) {}
+const std::string Token::token_names[10] = {
+    "KeywordToken", "IdentifierToken", "StringLitToken",
+    "DelimiterToken", "ErrorToken", "IntLitToken",
+    "FloatLitToken", "BoolLitToken", "NullLitToken",
+    "SpaceToken"
+}; 
 
-        virtual ~Token() = default;
+Token::Token(int position) : position(position) { }
 
-        virtual string to_string() {
-            assert(0);
-        }
-        
-        int getPosition() {
-            return position;
-        }
-};
+Token::~Token() = default;
 
-template<typename T>
-class GenericToken  : public Token {
-    private:
-        T data;
-    public:
-        GenericToken(T value, int position) : Token(position), data(value)  {}
-        ~GenericToken() override {
-            HERE
-        }
-       
-        T getValue() {
-            return data;
-        }
-        string to_string() override {
-            if (constexpr(is_same_v<T, string>::value)) {
-                return string(typeid(*this).name()) + "(" + data + ")(" + std::to_string(getPosition()) + ")";
-            }
-            else if (constexpr(is_same_v<T, string>::value)) {
-                return string(typeid(*this).name()) + "(" + (data == 0 ? "false" : "true") + ")(" + std::to_string(getPosition()) + ")";
-            }
-            else {
-                return string(typeid(*this).name()) + "(" + std::to_string(data) + ")(" + std::to_string(getPosition()) + ")";
-            }
-        }   
-};
+// std::string Token::to_string() = 0;
 
-class EmptyToken : public Token {
-public:
-    EmptyToken(int position) : Token(position) {}
+int Token::get_position() { 
+    return position;
+}
 
-    string to_string() override {
-        return string(typeid(*this).name()) + "()(" + std::to_string(getPosition()) +")";
+TokenCreator::TokenCreator() { }
+
+std::unique_ptr<Token> TokenCreator::generate_token(std::string tokenType, int data, int pos) {
+    if (tokenType == "IntLitToken") {
+        return std::make_unique<IntLitToken>(data, pos);                
     }
-    
-};
+    assert(0);
+    return std::make_unique<ErrorToken>("INTERNAL ERROR: Incorrect Token created", pos);
+}
 
-using KeywordToken = GenericToken<string>;
-using IdentifierToken = GenericToken<string>;
-using StringLitToken = GenericToken<string>;
-using DelimiterToken = GenericToken<string>;
-using ErrorToken = GenericToken<string>;
-using IntLitToken = GenericToken<int>;
-using BoolLitToken = GenericToken<bool>;
-using NullLitToken = EmptyToken;
-using SpaceToken = EmptyToken;
+std::unique_ptr<Token> TokenCreator::generate_token(std::string tokenType, float data, int pos) {
+    if (tokenType == "FloatLitToken") {
+        return std::make_unique<FloatLitToken>(data, pos);                
+    }
+    assert(0);
+    return std::make_unique<ErrorToken>("INTERNAL ERROR: Incorrect Token created", pos);
+}
 
-// Useless?
-//using EOFToken = EmptyToken; 
-//using OperatorToken
-//using PrimTypeToken = GenericToken<string>;
+std::unique_ptr<Token> TokenCreator::generate_token(std::string tokenType, std::string data, int pos) {
+    if (tokenType == "StringLitToken") {
+        return std::make_unique<StringLitToken>(data, pos);                
+    }
+    else if (tokenType == "DelimiterToken") {
+        return std::make_unique<DelimiterToken>(data, pos);                
+    }
+    else if (tokenType == "KeywordToken") {
+        return std::make_unique<KeywordToken>(data, pos);                
+    }
+    else if (tokenType == "IdentifierToken") {
+        return std::make_unique<IdentifierToken>(data, pos);
+    }
+    else if (tokenType == "ErrorToken") {
+        return std::make_unique<ErrorToken>(data, pos);                
+    }
+    assert(0);
+    return std::make_unique<ErrorToken>("INTERNAL ERROR: Incorrect Token created", pos);
+}
 
+std::unique_ptr<Token> TokenCreator::generate_token(std::string tokenType, bool data, int pos ) {
+    if (tokenType == "BoolLitToken") {
+        return std::make_unique<BoolLitToken>(data, pos); 
+    }      
+    assert(0);
+    return std::make_unique<ErrorToken>("INTERNAL ERROR: Incorrect Token created", pos);
+}
 
-class TokenCreator {
-    public:
-        TokenCreator() {
-
-        }
-        unique_ptr<Token> generate_token(string tokenType, int data, int pos) {
-            if (tokenType == "IntLitToken") {
-                return make_unique<IntLitToken>(data, pos);                
-            }
-            assert(0);
-            return make_unique<ErrorToken>("INTERNAL ERROR: Incorrect Token created", pos);
-        }
-        unique_ptr<Token> generate_token(string tokenType, string data, int pos) {
-            if (tokenType == "StringLitToken") {
-                return make_unique<StringLitToken>(data, pos);                
-            }
-            else if (tokenType == "DelimiterToken") {
-                return make_unique<DelimiterToken>(data, pos);                
-            }
-            else if (tokenType == "KeywordToken") {
-                return make_unique<KeywordToken>(data, pos);                
-            }
-            else if (tokenType == "IdentifierToken") {
-                return make_unique<IdentifierToken>(data, pos);
-            }
-            else if (tokenType == "ErrorToken") {
-                return make_unique<ErrorToken>(data, pos);                
-            }
-            assert(0);
-            return make_unique<ErrorToken>("INTERNAL ERROR: Incorrect Token created", pos);
-        }
-
-        unique_ptr<Token> generate_token(string tokenType, bool data, int pos ) {
-            if (tokenType == "BoolLitToken") {
-                return make_unique<BoolLitToken>(data, pos); 
-            }      
-            assert(0);
-            return make_unique<ErrorToken>("INTERNAL ERROR: Incorrect Token created", pos);
-        }
-
-        unique_ptr<Token> generate_token(string tokenType, int pos = 0) {
-            if (tokenType == "NullLitToken") {
-                return make_unique<NullLitToken>(pos);
-            }
-            else if (tokenType == "SpaceToken") {
-                return make_unique<SpaceToken>(pos);
-            }
-            assert(0);
-            return make_unique<ErrorToken>("INTERNAL ERROR: Incorrect Token created", pos);
-        }
-};
+std::unique_ptr<Token> TokenCreator::generate_token(std::string tokenType, int pos = 0) {
+    if (tokenType == "NullLitToken") {
+        return std::make_unique<NullLitToken>(pos);
+    }
+    else if (tokenType == "SpaceToken") {
+        return std::make_unique<SpaceToken>(pos);
+    }
+    assert(0);
+    return std::make_unique<ErrorToken>("INTERNAL ERROR: Incorrect Token created", pos);
+}
