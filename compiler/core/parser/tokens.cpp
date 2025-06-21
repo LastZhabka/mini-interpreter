@@ -95,6 +95,18 @@ class BoolLitToken : public Token {
         }
 };
 
+class NullLitToken : public Token {
+    private:
+    public:
+        NullLitToken(int position) : Token(position) {
+            
+        }
+
+        string toString() override {
+            return "NullLitToken(null)(" + to_string(getPosition()) + ")";
+        }
+}
+
 class DelimiterToken : public Token {
     private:
         string value;
