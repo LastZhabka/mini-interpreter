@@ -1,183 +1,126 @@
- #include <string>
- using namespace std;
- 
- 
+#include <string>
+#include <typeinfo>
+#include <cassert>
+#include <memory>
+using namespace std;
 
 class Token {
     private:
         int position;
     public:
-        Token(int position) : position(position) {
-        }
+        Token(int position) : position(position) {}
 
-        virtual string toString() = 0;
+        virtual ~Token() = default;
+
+        virtual string to_string() {
+            assert(0);
+        }
         
         int getPosition() {
             return position;
         }
 };
 
-class KeywordToken : public Token {
+template<typename T>
+class GenericToken  : public Token {
     private:
-        string value;
+        T data;
     public:
-        KeywordToken(int position, string value) : Token(position), value(value) {
-
+        GenericToken(T value, int position) : Token(position), data(value)  {}
+        ~GenericToken() override {
+            HERE
         }
-
-        string toString() override {
-            return "KeywordToken(" + value + ")(" + to_string(getPosition()) + ")";
+       
+        T getValue() {
+            return data;
         }
+        string to_string() override {
+            if (constexpr(is_same_v<T, string>::value)) {
+                return string(typeid(*this).name()) + "(" + data + ")(" + std::to_string(getPosition()) + ")";
+            }
+            else if (constexpr(is_same_v<T, string>::value)) {
+                return string(typeid(*this).name()) + "(" + (data == 0 ? "false" : "true") + ")(" + std::to_string(getPosition()) + ")";
+            }
+            else {
+                return string(typeid(*this).name()) + "(" + std::to_string(data) + ")(" + std::to_string(getPosition()) + ")";
+            }
+        }   
 };
 
-class IdentifierToken : public Token {
-    private:
-        string name;
-    public:
-        IdentifierToken(int position, string name) : Token(position), name(name) {
-        
-        }
+class EmptyToken : public Token {
+public:
+    EmptyToken(int position) : Token(position) {}
 
-        string toString() override {
-            return "IdentifierToken(" + name + ")(" + to_string(getPosition()) + ")";
-        }
+    string to_string() override {
+        return string(typeid(*this).name()) + "()(" + std::to_string(getPosition()) +")";
+    }
+    
 };
 
-class PrimTypeToken : public Token {
-    private:
-        string value;
+using KeywordToken = GenericToken<string>;
+using IdentifierToken = GenericToken<string>;
+using StringLitToken = GenericToken<string>;
+using DelimiterToken = GenericToken<string>;
+using ErrorToken = GenericToken<string>;
+using IntLitToken = GenericToken<int>;
+using BoolLitToken = GenericToken<bool>;
+using NullLitToken = EmptyToken;
+using SpaceToken = EmptyToken;
+
+// Useless?
+//using EOFToken = EmptyToken; 
+//using OperatorToken
+//using PrimTypeToken = GenericToken<string>;
+
+
+class TokenCreator {
     public:
-        PrimTypeToken(int position, string value) : Token(position), value(value) {
+        TokenCreator() {
 
         }
-
-        string toString() override {
-            return "PrimTypeToken(" + value + ")(" + to_string(getPosition()) + ")";
+        unique_ptr<Token> generate_token(string tokenType, int data, int pos) {
+            if (tokenType == "IntLitToken") {
+                return make_unique<IntLitToken>(data, pos);                
+            }
+            assert(0);
+            return make_unique<ErrorToken>("INTERNAL ERROR: Incorrect Token created", pos);
         }
-};
-
-class IntLitToken : public Token {
-    private:
-        int value;
-    public:
-        IntLitToken(int position, int value) : Token(position), value(value) {
-
-        }
-
-        string toString() override {
-            return "IntLitToken(" + to_string(value) + ")(" + to_string(getPosition()) + ")";
-        }
-};
-
-class StringLitToken : public Token {
-    private:
-        string value;
-    public:
-        StringLitToken(int position, string value) : Token(position), value(value) {
-
-        }
-
-        string toString() override {
-            return "StringLitToken(" + value + ")(" + to_string(getPosition()) + ")";
-        }
-};
-
-class BoolLitToken : public Token {
-    private:
-        bool value;
-    public:
-        BoolLitToken(int position, bool value) : Token(position), value(value) {
-
+        unique_ptr<Token> generate_token(string tokenType, string data, int pos) {
+            if (tokenType == "StringLitToken") {
+                return make_unique<StringLitToken>(data, pos);                
+            }
+            else if (tokenType == "DelimiterToken") {
+                return make_unique<DelimiterToken>(data, pos);                
+            }
+            else if (tokenType == "KeywordToken") {
+                return make_unique<KeywordToken>(data, pos);                
+            }
+            else if (tokenType == "IdentifierToken") {
+                return make_unique<IdentifierToken>(data, pos);
+            }
+            else if (tokenType == "ErrorToken") {
+                return make_unique<ErrorToken>(data, pos);                
+            }
+            assert(0);
+            return make_unique<ErrorToken>("INTERNAL ERROR: Incorrect Token created", pos);
         }
 
-        string toString() override {
-            return "BoolLitToken(" + to_string(value) + ")(" + to_string(getPosition()) + ")";
-        }
-};
-
-class NullLitToken : public Token {
-    private:
-    public:
-        NullLitToken(int position) : Token(position) {
-            
+        unique_ptr<Token> generate_token(string tokenType, bool data, int pos ) {
+            if (tokenType == "BoolLitToken") {
+                return make_unique<BoolLitToken>(data, pos); 
+            }      
+            assert(0);
+            return make_unique<ErrorToken>("INTERNAL ERROR: Incorrect Token created", pos);
         }
 
-        string toString() override {
-            return "NullLitToken(null)(" + to_string(getPosition()) + ")";
-        }
-}
-
-class DelimiterToken : public Token {
-    private:
-        string value;
-    public:
-        DelimiterToken(int position, string value) : Token(position), value(value) {
-
-        }
-
-        string toString() override {
-            return "DelimiterToken(" + value + ")(" + to_string(getPosition()) + ")";
-        }
-};
-
-class OperatorToken : public Token {
-    private:
-        string name;
-    public:
-        OperatorToken(int position, string name) : Token(position), name(name) {
-
-        }
-
-        string toString() override {
-            return "OperatorToken(" + name + ")(" + to_string(getPosition()) + ")";
-        }
-};
-
-class CommentToken : public Token {
-    private:
-        string text;
-    public:
-        CommentToken(int position, string text) : Token(position), text(text) {
-
-        }
-
-        string toString() override {
-            return "CommentToken(" + text + ")(" + to_string(getPosition()) + ")";
-        }
-};
-
-class SpaceToken : public Token {
-    private:
-    public:
-        SpaceToken(int position) : Token(position) {
-
-        }
-
-        string toString() override {
-            return "SpaceToken()(" + to_string(getPosition()) + ")";
-        }
-};
-
-class ErrorToken : public Token {
-    private:
-        string content;
-    public:
-        ErrorToken(int position, string content) : Token(position), content(content) {
-
-        }
-
-        string toString() override {
-            return "ErrorToken(" + content + ")(" + to_string(getPosition()) + ")";
-        }
-};
-
-class EOFToken : public Token {
-    public:
-        EOFToken(int position) : Token(position) {
-
-        }
-
-        string toString() override {
-            return "EOFToken()(" + to_string(getPosition()) + ")";
+        unique_ptr<Token> generate_token(string tokenType, int pos = 0) {
+            if (tokenType == "NullLitToken") {
+                return make_unique<NullLitToken>(pos);
+            }
+            else if (tokenType == "SpaceToken") {
+                return make_unique<SpaceToken>(pos);
+            }
+            assert(0);
+            return make_unique<ErrorToken>("INTERNAL ERROR: Incorrect Token created", pos);
         }
 };
