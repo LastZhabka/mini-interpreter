@@ -46,13 +46,13 @@ T GenericToken<T, type_name>::getValue() {
 template<typename T, int type_name>
 std::string GenericToken<T, type_name>::to_string() {
     if constexpr((std::is_same_v<T, std::string>)) {
-        return token_names[type_name] + "(" + data + ") (" + std::to_string(get_position()) + ")";
+        return token_names[type_name] + "(" + data + ")(" + std::to_string(get_position()) + ")";
     }
     else if constexpr((std::is_same_v<T, bool>)) {
-        return token_names[type_name] + "(" + (data ?  "true" : "false") + ") (" + std::to_string(get_position()) + ")";
+        return token_names[type_name] + "(" + (data ?  "true" : "false") + ")(" + std::to_string(get_position()) + ")";
     }
     else {
-        return token_names[type_name] + "(" + std::to_string(data) + ") (" + std::to_string(get_position()) + ")";
+        return token_names[type_name] + "(" + std::to_string(data) + ")(" + std::to_string(get_position()) + ")";
     }
 }   
 
