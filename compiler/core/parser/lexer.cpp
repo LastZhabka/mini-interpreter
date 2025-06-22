@@ -73,6 +73,9 @@ std::vector<std::unique_ptr<Token>> Lexer::run(std::string input) {
 
         input = input.substr(longest_match.second, input.size() - longest_match.second);
     }
+    
+    tokens.push_back(token_creator.generate_token("EOFToken", 0)); // Add EOF Token at the end
+    
     return tokens;
 }
 
@@ -82,8 +85,8 @@ Rules:
 
     (|)  => DelimiterToken(pos, symb)
 
-    add|set|puts|concat|lowercase|uppercase|lowercase +
-    replace|substring|subtract|multiply|divide|abs +
+    add|set|puts|concat|lowercase|uppercase|lowercase|
+    replace|substring|subtract|multiply|divide|abs|
     min|gt|lt|equal|not_equal 
     => KeywordToken
 

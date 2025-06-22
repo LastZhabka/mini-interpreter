@@ -4,11 +4,11 @@
 #include <memory>
 #include "tokens.h"
 
-const std::string Token::token_names[10] = {
+const std::string Token::id_to_token_name[11] = {
     "KeywordToken", "IdentifierToken", "StringLitToken",
     "DelimiterToken", "ErrorToken", "IntLitToken",
     "FloatLitToken", "BoolLitToken", "NullLitToken",
-    "SpaceToken"
+    "SpaceToken", "EOFToken"
 }; 
 
 Token::Token(int position) : position(position) { }
@@ -73,6 +73,9 @@ std::unique_ptr<Token> TokenCreator::generate_token(std::string tokenType, int p
     }
     else if (tokenType == "SpaceToken") {
         return std::make_unique<SpaceToken>(pos);
+    }
+    else if (tokenType == "EOFToken") {
+        return std::make_unique<EOFToken>(pos);
     }
     assert(0);
     return std::make_unique<ErrorToken>("INTERNAL ERROR: Incorrect Token created", pos);

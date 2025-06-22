@@ -11,7 +11,7 @@ private:
     int position;
 
 public:
-    static const std::string token_names[10];
+    static const std::string id_to_token_name[11];
     Token(int position);
     virtual ~Token();
 
@@ -46,13 +46,13 @@ T GenericToken<T, type_name>::getValue() {
 template<typename T, int type_name>
 std::string GenericToken<T, type_name>::to_string() {
     if constexpr((std::is_same_v<T, std::string>)) {
-        return token_names[type_name] + "(" + data + ")(" + std::to_string(get_position()) + ")";
+        return id_to_token_name[type_name] + "(" + data + ")(" + std::to_string(get_position()) + ")";
     }
     else if constexpr((std::is_same_v<T, bool>)) {
-        return token_names[type_name] + "(" + (data ?  "true" : "false") + ")(" + std::to_string(get_position()) + ")";
+        return id_to_token_name[type_name] + "(" + (data ?  "true" : "false") + ")(" + std::to_string(get_position()) + ")";
     }
     else {
-        return token_names[type_name] + "(" + std::to_string(data) + ")(" + std::to_string(get_position()) + ")";
+        return id_to_token_name[type_name] + "(" + std::to_string(data) + ")(" + std::to_string(get_position()) + ")";
     }
 }   
 
@@ -70,7 +70,7 @@ EmptyToken<type_name>::EmptyToken(int position) : Token(position) { }
 
 template<int type_name>
 std::string EmptyToken<type_name>::to_string() {
-    return token_names[type_name] + "()(" + std::to_string(get_position()) +")";
+    return id_to_token_name[type_name] + "()(" + std::to_string(get_position()) +")";
 }
 
 
@@ -84,6 +84,7 @@ using FloatLitToken = GenericToken<float, 6>;
 using BoolLitToken = GenericToken<bool, 7>;
 using NullLitToken = EmptyToken<8>;
 using SpaceToken = EmptyToken<9>;
+using EOFToken = EmptyToken<10>;
 
 // Useless?
 //using EOFToken = EmptyToken; 
