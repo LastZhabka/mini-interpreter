@@ -1,3 +1,6 @@
+#ifndef LEXER_H
+#define LEXER_H
+
 #include <regex>
 #include <cassert>
 #include <iostream>
@@ -27,3 +30,4 @@ class Lexer {
 
         std::vector<std::unique_ptr<Token>> run(std::string input);
 };
+#endif // LEXER_H
