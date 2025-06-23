@@ -16,6 +16,7 @@ public:
     virtual ~Token();
 
     virtual std::string to_string() = 0;
+    virtual std::string get_type() = 0;
     int get_position();
 };
 
@@ -28,7 +29,8 @@ public:
     GenericToken(T value, int position);
     ~GenericToken() override;
 
-    T getValue();
+    T get_value();
+    std::string get_type() override;
     std::string to_string() override;
 };
 
@@ -39,38 +41,47 @@ template<typename T, int type_name>
 GenericToken<T, type_name>::~GenericToken() {}
 
 template<typename T, int type_name>
-T GenericToken<T, type_name>::getValue() {
+T GenericToken<T, type_name>::get_value() {
     return data;
+}
+
+template<typename T, int type_name>
+std::string GenericToken<T, type_name>::get_type() {
+    return id_to_token_name[type_name];
 }
 
 template<typename T, int type_name>
 std::string GenericToken<T, type_name>::to_string() {
     if constexpr((std::is_same_v<T, std::string>)) {
-        return id_to_token_name[type_name] + "(" + data + ")(" + std::to_string(get_position()) + ")";
+        return this->get_type() + "(" + data + ")(" + std::to_string(get_position()) + ")";
     }
     else if constexpr((std::is_same_v<T, bool>)) {
-        return id_to_token_name[type_name] + "(" + (data ?  "true" : "false") + ")(" + std::to_string(get_position()) + ")";
+        return this->get_type() + "(" + (data ?  "true" : "false") + ")(" + std::to_string(get_position()) + ")";
     }
     else {
-        return id_to_token_name[type_name] + "(" + std::to_string(data) + ")(" + std::to_string(get_position()) + ")";
+        return this->get_type() + "(" + std::to_string(data) + ")(" + std::to_string(get_position()) + ")";
     }
 }   
-
 
 template <int type_name>
 class EmptyToken : public Token {
 public:
     EmptyToken(int position);
     std::string to_string() override;
+    std::string get_type() override;
 };
 
 template<int type_name>
 EmptyToken<type_name>::EmptyToken(int position) : Token(position) { }
 
+template<int type_name>
+std::string EmptyToken<type_name>::get_type() {
+    return id_to_token_name[type_name];
+}
 
 template<int type_name>
 std::string EmptyToken<type_name>::to_string() {
-    return id_to_token_name[type_name] + "()(" + std::to_string(get_position()) +")";
+    return this->get_type() + "()(" + std::to_string(get_position()) +")";
 }
 
 
