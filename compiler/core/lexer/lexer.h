@@ -28,6 +28,6 @@ class Lexer {
 
         Lexer();
 
-        std::vector<std::unique_ptr<Token>> run(std::string input);
+        std::vector<std::shared_ptr<Token>> run(std::string input);
 };
 #endif // LEXER_H

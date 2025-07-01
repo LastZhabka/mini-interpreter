@@ -38,9 +38,9 @@ Lexer::Lexer() {
     lexer_rules.push_back(Rule(std::regex("^\n"), "SpaceToken"));                    
 }
 
-std::vector<std::unique_ptr<Token>> Lexer::run(std::string input) {
+std::vector<std::shared_ptr<Token>> Lexer::run(std::string input) {
     // works in O(|Rules| * n^2), we can do it faster
-    std::vector<std::unique_ptr<Token>> tokens;  
+    std::vector<std::shared_ptr<Token>> tokens;  
     while(input.size()) {
         std::pair<std::string, int> longest_match = {"None", -1};
         for(auto rule : lexer_rules) {
