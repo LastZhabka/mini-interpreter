@@ -52,15 +52,18 @@ std::string GenericToken<T, type_name>::get_type() {
 
 template<typename T, int type_name>
 std::string GenericToken<T, type_name>::to_string() {
+    std::string result;
     if constexpr((std::is_same_v<T, std::string>)) {
-        return this->get_type() + "(" + data + ")(" + std::to_string(get_position()) + ")";
+        result = this->get_type() + "(" + data + ")";
     }
     else if constexpr((std::is_same_v<T, bool>)) {
-        return this->get_type() + "(" + (data ?  "true" : "false") + ")(" + std::to_string(get_position()) + ")";
+        result = this->get_type() + "(" + (data ?  "true" : "false") + ")";
     }
     else {
-        return this->get_type() + "(" + std::to_string(data) + ")(" + std::to_string(get_position()) + ")";
+        result = this->get_type() + "(" + std::to_string(data) + ")";
     }
+    return result;
+    // + "(" + std::to_string(get_position()) + ")";
 }   
 
 template <int type_name>
@@ -81,7 +84,9 @@ std::string EmptyToken<type_name>::get_type() {
 
 template<int type_name>
 std::string EmptyToken<type_name>::to_string() {
-    return this->get_type() + "()(" + std::to_string(get_position()) +")";
+    std::string result = this->get_type() + "()";
+    return result; 
+    //+ (" + std::to_string(get_position()) +")";
 }
 
 
