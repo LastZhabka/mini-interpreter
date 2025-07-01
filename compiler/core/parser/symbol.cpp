@@ -71,6 +71,10 @@ ProductionRules::ProductionRules(std::vector<std::pair<std::shared_ptr<Symbol>, 
     }
 }
 
+void ProductionRules::add_rule(std::pair<std::shared_ptr<Symbol>, std::vector<std::shared_ptr<Symbol>>> rule) {
+    production_rules.insert(rule);
+}
+
 std::vector<std::shared_ptr<Symbol>> ProductionRules::get_rule(std::shared_ptr<Symbol> target) {
     if (!production_rules.count(target)) { // Don't create x
         assert(0); // parsing problem
