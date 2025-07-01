@@ -26,6 +26,8 @@ class Symbol {
         bool operator==(const Symbol& other) const;
 
         virtual bool is_terminal() = 0;
+
+        virtual std::vector<std::shared_ptr<Symbol>> decompose(std::shared_ptr<Symbol> target_first) = 0;
 };
 
 class SymbolHash { // for polymorphism
@@ -45,6 +47,8 @@ class TerminalSymbol : public Symbol {
         TerminalSymbol(std::shared_ptr<Token> token); 
 
         TerminalSymbol(std::string symbol);
+        
+        std::vector<std::shared_ptr<Symbol>> decompose(std::shared_ptr<Symbol> target_first) override;
 
         bool is_terminal() override;
 };
@@ -57,7 +61,7 @@ class NonTerminalSymbol : public Symbol {
     public:
         NonTerminalSymbol(std::string symbol, std::shared_ptr<ProductionRules> production_rules); 
         
-        // split function?
+        std::vector<std::shared_ptr<Symbol>> decompose(std::shared_ptr<Symbol> target_first) override;
 
         bool is_terminal() override;
 };

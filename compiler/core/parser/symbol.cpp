@@ -44,6 +44,11 @@ bool TerminalSymbol::is_terminal() {
     return true;
 }
 
+std::vector<std::shared_ptr<Symbol>> TerminalSymbol::decompose(std::shared_ptr<Symbol> target_first) {
+    assert(0);
+    return std::vector<std::shared_ptr<Symbol>>();
+}
+
 //NonTerminalSymbol
 
 NonTerminalSymbol::NonTerminalSymbol(std::string symbol, std::shared_ptr<ProductionRules> production_rules) : Symbol(symbol), production_rules(production_rules) { }
@@ -52,6 +57,9 @@ bool NonTerminalSymbol::is_terminal() {
     return false;
 }
 
+std::vector<std::shared_ptr<Symbol>> NonTerminalSymbol::decompose(std::shared_ptr<Symbol> target_first) {
+    return production_rules->get_rule(target_first);
+}
 // ProductionRules
 
 ProductionRules::ProductionRules() { }
@@ -64,7 +72,7 @@ ProductionRules::ProductionRules(std::vector<std::pair<std::shared_ptr<Symbol>, 
 }
 
 std::vector<std::shared_ptr<Symbol>> ProductionRules::get_rule(std::shared_ptr<Symbol> target) {
-    if (production_rules.count(target)) { // Don't create 
+    if (!production_rules.count(target)) { // Don't create x
         assert(0); // parsing problem
         return std::vector<std::shared_ptr<Symbol>>();
     }
