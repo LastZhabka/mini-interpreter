@@ -53,9 +53,9 @@ class ProductionRules;
 
 class NonTerminalSymbol : public Symbol {
     private:
-        ProductionRules production_rules;
+        std::shared_ptr<ProductionRules> production_rules;
     public:
-        NonTerminalSymbol(std::string symbol, ProductionRules production_rules); 
+        NonTerminalSymbol(std::string symbol, std::shared_ptr<ProductionRules> production_rules); 
         
         // split function?
 

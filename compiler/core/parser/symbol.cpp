@@ -9,7 +9,7 @@
 
 Symbol::Symbol(std::string symbol) : symbol(symbol) { }
 
-Symbol::~Symbol() = default;
+// Symbol::~Symbol() = default;
 
 std::string Symbol::get_symbol_str() const {
     return symbol;
@@ -46,7 +46,7 @@ bool TerminalSymbol::is_terminal() {
 
 //NonTerminalSymbol
 
-NonTerminalSymbol::NonTerminalSymbol(std::string symbol, ProductionRules production_rules) : Symbol(symbol), production_rules(production_rules) { }
+NonTerminalSymbol::NonTerminalSymbol(std::string symbol, std::shared_ptr<ProductionRules> production_rules) : Symbol(symbol), production_rules(production_rules) { }
         
 bool NonTerminalSymbol::is_terminal() {
     return false;
