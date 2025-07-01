@@ -80,6 +80,8 @@ class ProductionRules {
         ProductionRules(std::vector<std::pair<std::shared_ptr<Symbol>, std::vector<std::shared_ptr<Symbol>>>> rules);
 
         void add_rule(std::pair<std::shared_ptr<Symbol>, std::vector<std::shared_ptr<Symbol>>> rule);
+        
+        void add_rules(std::vector<std::pair<std::shared_ptr<Symbol>, std::vector<std::shared_ptr<Symbol>>>> rules);
 
         std::vector<std::shared_ptr<Symbol>> get_rule(std::shared_ptr<Symbol> target);
 };
