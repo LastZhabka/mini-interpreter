@@ -26,7 +26,7 @@ class Program:
             function_call.execute(self.program_state)
         except Exception as e:
             print(e)
-            self.program_state.logger_print(f"Error on line {self.current_line + 1}.")
+            self.program_state.loggerPrint(f"Error on line {self.current_line + 1}.")
             self.terminate()
         if not self.moveToNextLine():
             self.terminate()
