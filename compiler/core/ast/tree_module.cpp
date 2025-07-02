@@ -1,95 +1,95 @@
-#include "tree_module.h"
-#include <memory>
+// #include "tree_module.h"
+// #include <memory>
 
-Expr::Expr( ): expr_type(Type::unresolved) { }
+// Expr::Expr( ): expr_type(Type::unresolved) { }
 
-Type Expr::get_type() {
-    return this->expr_type;
-}
-
-
-Puts::Puts(std::shared_ptr<Expr> target) : target(target) { }
-
-//functions:
-
-Addition::Addition(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
-
-Subtraction::Subtraction(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
-
-Multiplication::Multiplication(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
-
-Division::Division(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
-
-GreaterThan::GreaterThan(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
-
-LowerThan::LowerThan(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
-
-Equal::Equal(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
-
-NotEqual::NotEqual(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
-
-Min::Min(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
-
-Abs::Abs(std::shared_ptr<Expr> target) : target(target) { }
-
-Assignment::Assignment(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
+// Type Expr::get_type() {
+//     return this->expr_type;
+// }
 
 
-// string operations
+// Puts::Puts(std::shared_ptr<Expr> target) : target(target) { }
 
-Substring::Substring(std::shared_ptr<Expr> source, std::shared_ptr<Expr> l, std::shared_ptr<Expr> r) : source(source), l(l), r(r) { }
+// //functions:
 
-Lowercase::Lowercase(std::shared_ptr<Expr> target) : target(target) { }
+// Addition::Addition(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
 
-Uppercase::Uppercase(std::shared_ptr<Expr> target) : target(target) { }
+// Subtraction::Subtraction(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
 
-Identifier::Identifier(std::string name) : name(name) { }
+// Multiplication::Multiplication(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
 
-// Literals:
+// Division::Division(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
 
-IntLiteral::IntLiteral(int value) : value(value) { }
+// GreaterThan::GreaterThan(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
 
-Type IntLiteral::get_type() {
-    return Type::int_type;
-}
+// LowerThan::LowerThan(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
 
-int IntLiteral::get_value() {
-    return value;
-}
+// Equal::Equal(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
 
-FloatLiteral::FloatLiteral(float value) : value(value) { }
+// NotEqual::NotEqual(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
 
-Type FloatLiteral::get_type() {
-    return Type::float_type;
-}
+// Min::Min(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
 
-float FloatLiteral::get_value() {
-    return value;
-}
+// Abs::Abs(std::shared_ptr<Expr> target) : target(target) { }
 
-StringLiteral::StringLiteral(std::string value) : value(value) { }
+// Assignment::Assignment(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) : lhs(lhs), rhs(rhs) { }
 
-Type StringLiteral::get_type() {
-    return Type::string_type;
-}
 
-std::string StringLiteral::get_value() {
-    return value;
-}
+// // string operations
 
-BoolLiteral::BoolLiteral(bool value) : value(value) { }
+// Substring::Substring(std::shared_ptr<Expr> source, std::shared_ptr<Expr> l, std::shared_ptr<Expr> r) : source(source), l(l), r(r) { }
 
-Type BoolLiteral::get_type() {
-    return Type::bool_type;
-}
+// Lowercase::Lowercase(std::shared_ptr<Expr> target) : target(target) { }
 
-bool BoolLiteral::get_value() {
-    return value;
-}
+// Uppercase::Uppercase(std::shared_ptr<Expr> target) : target(target) { }
 
-NullLiteral::NullLiteral() { }
+// Identifier::Identifier(std::string name) : name(name) { }
 
-Type NullLiteral::get_type() {
-    return Type::null_type;
-}
+// // Literals:
+
+// IntLiteral::IntLiteral(int value) : value(value) { }
+
+// Type IntLiteral::get_type() {
+//     return Type::int_type;
+// }
+
+// int IntLiteral::get_value() {
+//     return value;
+// }
+
+// FloatLiteral::FloatLiteral(float value) : value(value) { }
+
+// Type FloatLiteral::get_type() {
+//     return Type::float_type;
+// }
+
+// float FloatLiteral::get_value() {
+//     return value;
+// }
+
+// StringLiteral::StringLiteral(std::string value) : value(value) { }
+
+// Type StringLiteral::get_type() {
+//     return Type::string_type;
+// }
+
+// std::string StringLiteral::get_value() {
+//     return value;
+// }
+
+// BoolLiteral::BoolLiteral(bool value) : value(value) { }
+
+// Type BoolLiteral::get_type() {
+//     return Type::bool_type;
+// }
+
+// bool BoolLiteral::get_value() {
+//     return value;
+// }
+
+// NullLiteral::NullLiteral() { }
+
+// Type NullLiteral::get_type() {
+//     return Type::null_type;
+// }
 
