@@ -17,7 +17,7 @@ enum class Type {
 
 class Puts;
 class Addition;
-class Substraction;
+class Subtraction;
 class Multiplication;
 class Division;
 class GreaterThan;
@@ -58,7 +58,7 @@ class ExprVisitor {
 
         virtual void visit(const Addition& expr);
         
-        virtual void visit(const Substraction& expr);
+        virtual void visit(const Subtraction& expr);
         
         virtual void visit(const Multiplication& expr);
         
@@ -336,7 +336,7 @@ class TypeVistior : public ExprVisitor {
 
         void visit(const Addition& expr) override;
         
-        void visit(const Substraction& expr) override;
+        void visit(const Subtraction& expr) override;
         
         void visit(const Multiplication& expr) override;
         
@@ -386,7 +386,7 @@ class ToStringVisitior : public ExprVisitor {
 
         void visit(const Addition& expr) override;
         
-        void visit(const Substraction& expr) override;
+        void visit(const Subtraction& expr) override;
         
         void visit(const Multiplication& expr) override;
         
@@ -436,7 +436,7 @@ class PrintVisitor : public ExprVisitor {
 
         void visit(const Addition& expr) override;
         
-        void visit(const Substraction& expr) override;
+        void visit(const Subtraction& expr) override;
         
         void visit(const Multiplication& expr) override;
         
