@@ -106,8 +106,11 @@ class Expr {
     private:
         std::vector<std::shared_ptr<Expr>> target; // Tree structure
     public:
-        virtual ~Expr() = default;
+        virtual ~Expr(); //  = default
+
         virtual void accept(std::shared_ptr<ExprVisitor> visitor) = 0;
+
+        void push_back(std::shared_ptr<Expr> elem);
 };  
 
 
@@ -117,7 +120,7 @@ class Puts : public Expr {
     public:
         Puts(std::shared_ptr<Expr> target);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 // Functions:
@@ -127,7 +130,7 @@ class Addition : public Expr{
     public:
         Addition(std::vector<std::shared_ptr<Expr>> operands);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 class Subtraction : public Expr{
@@ -135,7 +138,7 @@ class Subtraction : public Expr{
     public:
         Subtraction(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 class Multiplication : public Expr{
@@ -143,7 +146,7 @@ class Multiplication : public Expr{
     public:
         Multiplication(std::vector<std::shared_ptr<Expr>> operands);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 class Division : public Expr{
@@ -151,7 +154,7 @@ class Division : public Expr{
     public:
         Division(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 
@@ -160,7 +163,7 @@ class GreaterThan : public Expr{
     public:
         GreaterThan(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 class LowerThan : public Expr{
@@ -168,7 +171,7 @@ class LowerThan : public Expr{
     public:
         LowerThan(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 class Equal : public Expr{
@@ -176,7 +179,7 @@ class Equal : public Expr{
     public:
         Equal(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 class NotEqual : public Expr{
@@ -184,7 +187,7 @@ class NotEqual : public Expr{
     public:
         NotEqual(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 class Min : public Expr{
@@ -192,7 +195,7 @@ class Min : public Expr{
     public:
         Min(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 class Abs : public Expr{
@@ -200,7 +203,7 @@ class Abs : public Expr{
     public:
         Abs(std::shared_ptr<Expr> target);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 // Assignment  x := 1
@@ -209,7 +212,7 @@ class Assignment : public Expr{
     public:
         Assignment(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 
@@ -219,7 +222,7 @@ class Concatenation : public Expr{
     public:
         Concatenation(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 class Replacement : public Expr{
@@ -227,7 +230,7 @@ class Replacement : public Expr{
     public:
         Replacement(std::shared_ptr<Expr> source, std::shared_ptr<Expr> target, std::shared_ptr<Expr> replacement);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 class Substring : public Expr{
@@ -235,7 +238,7 @@ class Substring : public Expr{
     public:
         Substring(std::shared_ptr<Expr> source, std::shared_ptr<Expr> l, std::shared_ptr<Expr> r);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 class Lowercase : public Expr{
@@ -243,7 +246,7 @@ class Lowercase : public Expr{
     public:
         Lowercase(std::shared_ptr<Expr> target);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 class Uppercase : public Expr{
@@ -251,7 +254,7 @@ class Uppercase : public Expr{
     public:
         Uppercase(std::shared_ptr<Expr> target);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 
@@ -263,7 +266,7 @@ class Identifier : public Expr {
     public:
         Identifier(std::shared_ptr<Expr> name);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 
@@ -276,7 +279,7 @@ class IntLiteral : public Expr {
     public:
         IntLiteral(int value);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 class FloatLiteral : public Expr {
@@ -285,7 +288,7 @@ class FloatLiteral : public Expr {
     public:
         FloatLiteral(float value);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 class StringLiteral : public Expr {
@@ -294,7 +297,7 @@ class StringLiteral : public Expr {
     public:
         StringLiteral(std::string value);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 class BoolLiteral : public Expr {
@@ -303,7 +306,7 @@ class BoolLiteral : public Expr {
     public:
         BoolLiteral(bool value);
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 class NullLiteral : public Expr {
@@ -311,7 +314,86 @@ class NullLiteral : public Expr {
     public:
         NullLiteral();
 
-        void accept(std::shared_ptr<ExprVisitor> visitor);
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
-#endif TREE_MODULE_H
+
+// expr for the parse tree (dummy)
+
+class ParseTempExpr : public Expr {
+    private:
+    public:
+        ParseTempExpr();
+
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
+};
+
+
+class TypeVistior : public ExprVisitor {
+    private:
+    public:
+        void visit(const Puts& expr) override;
+
+        void visit(const Addition& expr) override;
+        
+        void visit(const Substraction& expr) override;
+        
+        void visit(const Multiplication& expr) override;
+        
+        void visit(const Division& expr) override;
+        
+        void visit(const GreaterThan& expr) override;
+        
+        void visit(const LowerThan& expr) override;
+        
+        void visit(const Equal& expr) override;
+        
+        void visit(const NotEqual& expr) override;
+
+        void visit(const Min& expr) override;
+        
+        void visit(const Abs& expr) override;
+
+        void visit(const Assignment& expr) override;
+        
+        void visit(const Concatenation& expr) override;
+        
+        void visit(const Replacement& expr) override;
+        
+        void visit(const Substring& expr) override;
+
+        void visit(const Lowercase& expr) override;
+        
+        void visit(const Uppercase& expr) override;
+
+        void visit(const Identifier& expr) override;
+        
+        void visit(const IntLiteral& expr) override;
+
+        void visit(const FloatLiteral& expr) override;
+        
+        void visit(const StringLiteral& expr) override;
+
+        void visit(const BoolLiteral& expr) override;
+        
+        void visit(const NullLiteral& expr) override;
+};
+
+
+class ExprCreator {
+public:
+    ExprCreator();
+    
+    std::shared_ptr<Token> generate_expr(std::string exprType, int data);
+    std::shared_ptr<Token> generate_token(std::string exprType, float data);
+    std::shared_ptr<Token> generate_token(std::string exprType, std::string data);
+    std::shared_ptr<Token> generate_token(std::string exprType, bool data);
+    std::shared_ptr<Token> generate_token(std::string exprType);
+};
+
+// class RepresentationVistior : public ExprVisitor {
+
+// };
+
+
+#endif // TREE_MODULE_H

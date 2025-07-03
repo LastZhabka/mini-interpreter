@@ -5,8 +5,10 @@
 #include <stack>
 #include <algorithm>
 #include <iostream>
+#include <map>
 
 #include "../lexer/tokens.h"
+#include "../ast/tree_module.h"
 #include "parser.h"
 
 Parser::Parser() {
@@ -162,6 +164,14 @@ First(Program') = {\SpaceToken, \EOFToken}
 
 */
 
+
+// We need separate moudle in utils like tokensMapper, to increase maintainabilit, for now lets just write things here
+
+// DUMMY FUNCTION
+std::shared_ptr<Expr> parserSymbolToASTExpr() {
+    return std::make_shared<IntLiteral>(1);
+}
+
 std::shared_ptr<Symbol> tokenToParserSymbol(std::shared_ptr<Token> token) {
     if (token->get_type() == "DelimiterToken") {
         return std::make_shared<TerminalSymbol>(token->to_string()); // TODO FIX LATER IMPLEMENT SEPARATE MODEL FOR IT
@@ -176,13 +186,18 @@ void Parser::parse(std::vector<std::shared_ptr<Token>> input)  {
     std::shared_ptr<Symbol> cur_input_symb = tokenToParserSymbol(input[0]);
 
     std::stack<std::shared_ptr<Symbol>> parsing_stack;
+    std::stack<std::shared_ptr<Expr>> parsing_stack_ast;
+    
     parsing_stack.push(start_symbol);
+    std::shared_ptr<Expr> root = std::make_shared<ParseTempExpr>();
+    parsing_stack_ast.push(root);
 
     while (parsing_stack.size()) {
         std::cerr << parsing_stack.top()->get_symbol_str() << " " << cur_input_symb->get_symbol_str() << "\n";
         if (*parsing_stack.top() == *cur_input_symb) {
-            // do something
+            // INJECT VALUE TO parsing_stack_ast.top()
             parsing_stack.pop();
+            parsing_stack_ast.pop();
             input_pos += 1;
             if (input_pos == input.size()) {
                 assert(parsing_stack.size() == 0);
@@ -192,13 +207,17 @@ void Parser::parse(std::vector<std::shared_ptr<Token>> input)  {
         }  
         else {
             std::vector<std::shared_ptr<Symbol>> decomposed_top = parsing_stack.top()->decompose(cur_input_symb);
-            // DO SOMETHING
+            std::shared_ptr<Expr> cur_expr = parsing_stack_ast.top();
             reverse(decomposed_top.begin(), decomposed_top.end());
             parsing_stack.pop();
+            parsing_stack_ast.pop();
             for(auto symb : decomposed_top) {
+                cur_expr->push_back(parserSymbolToASTExpr());
                 parsing_stack.push(symb);
             }
         }
+        // transform concrete syntax tree to abstract syntax tree
+        // return root?
     }
 
 }
