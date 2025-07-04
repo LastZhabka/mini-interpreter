@@ -2,7 +2,10 @@
 #include <memory>
 
 
+
 Expr::~Expr() = default;
+
+// CONSTRUCTORS
 
 void Expr::push_back(std::shared_ptr<Expr> element) {
     target.push_back(element);
@@ -96,29 +99,95 @@ Identifier::Identifier(std::shared_ptr<Expr> target) {
     this->push_back(target);
 }
 
-IntLiteral::IntLiteral(int value) : value(value) {
-
-}
+IntLiteral::IntLiteral(int value) : value(value) { }
 
 
-FloatLiteral::FloatLiteral(float value) : value(value) {
-
-}
+FloatLiteral::FloatLiteral(float value) : value(value) { }
 
 
-StringLiteral::StringLiteral(std::string value) : value(value) {
+StringLiteral::StringLiteral(std::string value) : value(value) { }
 
-}
-
-BoolLiteral::BoolLiteral(bool value) : value(value) {
-
-}
+BoolLiteral::BoolLiteral(bool value) : value(value) { }
 
 NullLiteral::NullLiteral() { }
 
 ParseTempExpr::ParseTempExpr() { }
 
+// CREATOR i.e. FACTORY METHOD
 
+std::shared_ptr<Expr> ExprCreator::operator()(std::string expr_type) {
+    if (expr_type == "Keyword(add)") {
+        return std::make_shared<Addition>(std::vector<std::shared_ptr<Expr>>(0));
+    }
+    else if (expr_type == "Keyword(subtract)") {
+        return std::make_shared<Subtraction>(nullptr, nullptr);
+    }
+    else if (expr_type == "Keyword(multiply)") {
+        return std::make_shared<Multiplication>(std::vector<std::shared_ptr<Expr>>(0));
+    }
+    else if (expr_type == "Keyword(divide)") {
+        return std::make_shared<Division>(nullptr, nullptr);
+    }
+    else if (expr_type == "Keyword(gt)") {
+        return std::make_shared<GreaterThan>(nullptr, nullptr);
+    }
+    else if (expr_type == "Keyword(lt)") {
+        return std::make_shared<LowerThan>(nullptr, nullptr);
+    }
+    else if (expr_type == "Keyword(equal)") {
+        return std::make_shared<Equal>(nullptr, nullptr);
+    }
+    else if (expr_type == "Keyword(not_equal)") {
+        return std::make_shared<NotEqual>(nullptr, nullptr);
+    }
+    else if (expr_type == "Keyword(min)") {
+        return std::make_shared<Min>(nullptr, nullptr);
+    }
+    else if (expr_type == "Keyword(abs)") {
+        return std::make_shared<Abs>(nullptr);
+    }
+    else if (expr_type == "Keyword(set)") {
+        return std::make_shared<Assignment>(nullptr, nullptr);
+    }
+    else if (expr_type == "Keyword(concat)") {
+        return std::make_shared<Concatenation>(nullptr, nullptr);
+    }
+    else if (expr_type == "Keyword(replace)") {
+        return std::make_shared<Replacement>(nullptr, nullptr, nullptr);
+    }
+    else if (expr_type == "Keyword(substring)") {
+        return std::make_shared<Substring>(nullptr, nullptr);
+    }
+    else if (expr_type == "Keyword(lowercase)") {
+        return std::make_shared<Lowercase>(nullptr);
+    }
+    else if (expr_type == "Keyword(uppercase)") {
+        return std::make_shared<Uppercase>(nullptr);
+    }
+    else if (expr_type == "Identifier") {
+        return std::make_shared<Identifier>(nullptr); //??????????
+    }
+    else if (expr_type == "IntLiteral") {
+        return std::make_shared<IntLiteral>(0);
+    }
+    else if (expr_type == "FloatLiteral") {
+        return std::make_shared<FloatLiteral>(0);
+    }
+    else if (expr_type == "StringLiteral") {
+        return std::make_shared<StringLiteral>("");
+    }
+    else if (expr_type == "BoolLiteral") {
+        return std::make_shared<BoolLiteral>(false);
+    }
+    else if (expr_type == "NullLiteral") {
+        return std::make_shared<NullLiteral>();
+    }
+    else if (expr_type == "ParseTempExpr") {
+        return std::make_shared<ParseTempExpr>();
+    }
+}
+
+// VISITOR
 
 void Puts::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);

@@ -38,7 +38,7 @@ class FloatLiteral;
 class StringLiteral;
 class BoolLiteral;
 class NullLiteral;
-
+class ParseTempExpr;
 
 /*
 Through visitor we will implement other functions of AST Nodes
@@ -257,8 +257,6 @@ class Uppercase : public Expr{
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
-
-
 // Identifier
 
 class Identifier : public Expr {
@@ -268,9 +266,6 @@ class Identifier : public Expr {
 
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
-
-
-
 
 // Literals
 class IntLiteral : public Expr {
@@ -317,9 +312,7 @@ class NullLiteral : public Expr {
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
-
 // expr for the parse tree (dummy)
-
 class ParseTempExpr : public Expr {
     private:
     public:
@@ -329,165 +322,17 @@ class ParseTempExpr : public Expr {
 };
 
 
-class TypeVistior : public ExprVisitor {
-    private:
-    public:
-        void visit(const Puts& expr) override;
-
-        void visit(const Addition& expr) override;
-        
-        void visit(const Subtraction& expr) override;
-        
-        void visit(const Multiplication& expr) override;
-        
-        void visit(const Division& expr) override;
-        
-        void visit(const GreaterThan& expr) override;
-        
-        void visit(const LowerThan& expr) override;
-        
-        void visit(const Equal& expr) override;
-        
-        void visit(const NotEqual& expr) override;
-
-        void visit(const Min& expr) override;
-        
-        void visit(const Abs& expr) override;
-
-        void visit(const Assignment& expr) override;
-        
-        void visit(const Concatenation& expr) override;
-        
-        void visit(const Replacement& expr) override;
-        
-        void visit(const Substring& expr) override;
-
-        void visit(const Lowercase& expr) override;
-        
-        void visit(const Uppercase& expr) override;
-
-        void visit(const Identifier& expr) override;
-        
-        void visit(const IntLiteral& expr) override;
-
-        void visit(const FloatLiteral& expr) override;
-        
-        void visit(const StringLiteral& expr) override;
-
-        void visit(const BoolLiteral& expr) override;
-        
-        void visit(const NullLiteral& expr) override;
-};
-
-class ToStringVisitior : public ExprVisitor {
-    private:
-    public:
-        void visit(const Puts& expr) override;
-
-        void visit(const Addition& expr) override;
-        
-        void visit(const Subtraction& expr) override;
-        
-        void visit(const Multiplication& expr) override;
-        
-        void visit(const Division& expr) override;
-        
-        void visit(const GreaterThan& expr) override;
-        
-        void visit(const LowerThan& expr) override;
-        
-        void visit(const Equal& expr) override;
-        
-        void visit(const NotEqual& expr) override;
-
-        void visit(const Min& expr) override;
-        
-        void visit(const Abs& expr) override;
-
-        void visit(const Assignment& expr) override;
-        
-        void visit(const Concatenation& expr) override;
-        
-        void visit(const Replacement& expr) override;
-        
-        void visit(const Substring& expr) override;
-
-        void visit(const Lowercase& expr) override;
-        
-        void visit(const Uppercase& expr) override;
-
-        void visit(const Identifier& expr) override;
-        
-        void visit(const IntLiteral& expr) override;
-
-        void visit(const FloatLiteral& expr) override;
-        
-        void visit(const StringLiteral& expr) override;
-
-        void visit(const BoolLiteral& expr) override;
-        
-        void visit(const NullLiteral& expr) override;
-};
-
-class PrintVisitor : public ExprVisitor {
-    private:
-    public:
-        void visit(const Puts& expr) override;
-
-        void visit(const Addition& expr) override;
-        
-        void visit(const Subtraction& expr) override;
-        
-        void visit(const Multiplication& expr) override;
-        
-        void visit(const Division& expr) override;
-        
-        void visit(const GreaterThan& expr) override;
-        
-        void visit(const LowerThan& expr) override;
-        
-        void visit(const Equal& expr) override;
-        
-        void visit(const NotEqual& expr) override;
-
-        void visit(const Min& expr) override;
-        
-        void visit(const Abs& expr) override;
-
-        void visit(const Assignment& expr) override;
-        
-        void visit(const Concatenation& expr) override;
-        
-        void visit(const Replacement& expr) override;
-        
-        void visit(const Substring& expr) override;
-
-        void visit(const Lowercase& expr) override;
-        
-        void visit(const Uppercase& expr) override;
-
-        void visit(const Identifier& expr) override;
-        
-        void visit(const IntLiteral& expr) override;
-
-        void visit(const FloatLiteral& expr) override;
-        
-        void visit(const StringLiteral& expr) override;
-
-        void visit(const BoolLiteral& expr) override;
-        
-        void visit(const NullLiteral& expr) override;
-};
 
 class ExprCreator {
-public:
-    ExprCreator();
-    
-    std::shared_ptr<Token> generate_expr(std::string exprType, int data);
-    std::shared_ptr<Token> generate_token(std::string exprType, float data);
-    std::shared_ptr<Token> generate_token(std::string exprType, std::string data);
-    std::shared_ptr<Token> generate_token(std::string exprType, bool data);
-    std::shared_ptr<Token> generate_token(std::string exprType);
+    public:
+        ExprCreator();
+        
+        /*
+            We always initialize AST node with some dummy value, during the parsing we will inject
+            the real value into the node.
+        */
+
+        std::shared_ptr<Expr> operator()(std::string expr_type);
 };
 
 // class RepresentationVistior : public ExprVisitor {
@@ -496,3 +341,156 @@ public:
 
 
 #endif // TREE_MODULE_H
+
+
+// class TypeVistior : public ExprVisitor {
+//     private:
+//     public:
+//         void visit(const Puts& expr) override;
+
+//         void visit(const Addition& expr) override;
+        
+//         void visit(const Subtraction& expr) override;
+        
+//         void visit(const Multiplication& expr) override;
+        
+//         void visit(const Division& expr) override;
+        
+//         void visit(const GreaterThan& expr) override;
+        
+//         void visit(const LowerThan& expr) override;
+        
+//         void visit(const Equal& expr) override;
+        
+//         void visit(const NotEqual& expr) override;
+
+//         void visit(const Min& expr) override;
+        
+//         void visit(const Abs& expr) override;
+
+//         void visit(const Assignment& expr) override;
+        
+//         void visit(const Concatenation& expr) override;
+        
+//         void visit(const Replacement& expr) override;
+        
+//         void visit(const Substring& expr) override;
+
+//         void visit(const Lowercase& expr) override;
+        
+//         void visit(const Uppercase& expr) override;
+
+//         void visit(const Identifier& expr) override;
+        
+//         void visit(const IntLiteral& expr) override;
+
+//         void visit(const FloatLiteral& expr) override;
+        
+//         void visit(const StringLiteral& expr) override;
+
+//         void visit(const BoolLiteral& expr) override;
+        
+//         void visit(const NullLiteral& expr) override;
+
+//         void visit(const ParseTempExpr& expr) override;
+// };
+
+// class ToStringVisitior : public ExprVisitor {
+//     private:
+//     public:
+//         void visit(const Puts& expr) override;
+
+//         void visit(const Addition& expr) override;
+        
+//         void visit(const Subtraction& expr) override;
+        
+//         void visit(const Multiplication& expr) override;
+        
+//         void visit(const Division& expr) override;
+        
+//         void visit(const GreaterThan& expr) override;
+        
+//         void visit(const LowerThan& expr) override;
+        
+//         void visit(const Equal& expr) override;
+        
+//         void visit(const NotEqual& expr) override;
+
+//         void visit(const Min& expr) override;
+        
+//         void visit(const Abs& expr) override;
+
+//         void visit(const Assignment& expr) override;
+        
+//         void visit(const Concatenation& expr) override;
+        
+//         void visit(const Replacement& expr) override;
+        
+//         void visit(const Substring& expr) override;
+
+//         void visit(const Lowercase& expr) override;
+        
+//         void visit(const Uppercase& expr) override;
+
+//         void visit(const Identifier& expr) override;
+        
+//         void visit(const IntLiteral& expr) override;
+
+//         void visit(const FloatLiteral& expr) override;
+        
+//         void visit(const StringLiteral& expr) override;
+
+//         void visit(const BoolLiteral& expr) override;
+        
+//         void visit(const NullLiteral& expr) override;
+// };
+
+// class PrintVisitor : public ExprVisitor {
+//     private:
+//     public:
+//         void visit(const Puts& expr) override;
+
+//         void visit(const Addition& expr) override;
+        
+//         void visit(const Subtraction& expr) override;
+        
+//         void visit(const Multiplication& expr) override;
+        
+//         void visit(const Division& expr) override;
+        
+//         void visit(const GreaterThan& expr) override;
+        
+//         void visit(const LowerThan& expr) override;
+        
+//         void visit(const Equal& expr) override;
+        
+//         void visit(const NotEqual& expr) override;
+
+//         void visit(const Min& expr) override;
+        
+//         void visit(const Abs& expr) override;
+
+//         void visit(const Assignment& expr) override;
+        
+//         void visit(const Concatenation& expr) override;
+        
+//         void visit(const Replacement& expr) override;
+        
+//         void visit(const Substring& expr) override;
+
+//         void visit(const Lowercase& expr) override;
+        
+//         void visit(const Uppercase& expr) override;
+
+//         void visit(const Identifier& expr) override;
+        
+//         void visit(const IntLiteral& expr) override;
+
+//         void visit(const FloatLiteral& expr) override;
+        
+//         void visit(const StringLiteral& expr) override;
+
+//         void visit(const BoolLiteral& expr) override;
+        
+//         void visit(const NullLiteral& expr) override;
+// };
