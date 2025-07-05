@@ -10,26 +10,60 @@
 #include "../lexer/tokens.h"
 #include "../ast/tree_module.h"
 #include "parser.h"
+#include "../../utils/mapper.h"
 
+ParsingStackElement::ParsingStackElement(
+    std::shared_ptr<Symbol> symbol, std::shared_ptr<Expr> expr, std::shared_ptr<Expr> ancestor, int order
+) : symbol(symbol), expr(expr), expr_ancestor(ancestor), order(order){ }
+
+/*
+
+Program -> Expression Program'
+Program' -> \SpaceToken Program | \EOFToken
+
+Expression -> \DelimiterToken(() Function \SpaceToken Params | Literal //  \DelimiterToken()) is handled by Params!!
+Function -> \KeywordToken(add)|...|\KeywordToken(not_equal)
+Params -> Expression Params'
+Params' -> \SpaceToken Params | \DelimiterToken())
+Literal -> \IntLitToken(...) | \BoolLitToken(...) | \FloatLitToken(...) | \StringLitToken(...) | \IdentifierToken
+
+
+First(Literal) = {\IntLitTOken(...), \BoolLitToken(...), \FloatLitToken(...), \StringLitToken(...), \IdentifierToken}
+
+First(Expression) = {\DelimiterToken((), \IntLitToken(...), \BoolLitToken(...), 
+                     \FloatLitToken(...), \StringLitToken(...), \IdentifierToken}
+
+First(Function) = {\KeywordToken(...)}
+
+First(Params) = {\DelimiterToken((), \IntLitToken(...), \BoolLitToken(...), 
+                 \FloatLitToken(...), \StringLitToken(...), \IdentifierToken}
+
+First(Program) = {\DelimiterToken((), \IntLitToken(...), \BoolLitToken(...), {\SpaceToken},
+                  \FloatLitToken(...), \StringLitToken(...), \IdentifierToken}
+
+First(Program') = {\SpaceToken, \EOFToken}
+
+*/
 Parser::Parser() {
-    // HERE WE NEED TO WRITE PARSING RULES FOR OUR LANGUAGE
     using namespace std;
     // TERMINALS:
+    TokenToSymbolMapper tokens_to_symbol_mapper;
+    SymbolCreator symbol_creator;
 
-    shared_ptr<Symbol> eof_ = make_shared<TerminalSymbol>(make_shared<EOFToken>(0));
-    shared_ptr<Symbol> space_ = make_shared<TerminalSymbol>(make_shared<SpaceToken>(0));
-    shared_ptr<Symbol> null_lit_ = make_shared<TerminalSymbol>(make_shared<NullLitToken>(0));
-    shared_ptr<Symbol> bool_lit_ = make_shared<TerminalSymbol>(make_shared<BoolLitToken>(false, 0));
-    shared_ptr<Symbol> float_lit_ = make_shared<TerminalSymbol>(make_shared<FloatLitToken>(0.0, 0));
-    shared_ptr<Symbol> int_lit_ = make_shared<TerminalSymbol>(make_shared<IntLitToken>(0, 0));
-    shared_ptr<Symbol> error_ = make_shared<TerminalSymbol>(make_shared<ErrorToken>("", 0));
+    shared_ptr<Symbol> eof_ = tokens_to_symbol_mapper(make_shared<EOFToken>(0));
+    shared_ptr<Symbol> space_ = tokens_to_symbol_mapper(make_shared<SpaceToken>(0));
+    shared_ptr<Symbol> null_lit_ = tokens_to_symbol_mapper(make_shared<NullLitToken>(0));
+    shared_ptr<Symbol> bool_lit_ = tokens_to_symbol_mapper(make_shared<BoolLitToken>(false, 0));
+    shared_ptr<Symbol> float_lit_ = tokens_to_symbol_mapper(make_shared<FloatLitToken>(0.0, 0));
+    shared_ptr<Symbol> int_lit_ = tokens_to_symbol_mapper(make_shared<IntLitToken>(0, 0));
+    shared_ptr<Symbol> error_ = tokens_to_symbol_mapper(make_shared<ErrorToken>("", 0));
     
-    shared_ptr<Symbol> delimiter_ob_ = make_shared<TerminalSymbol>(DelimiterToken("(", 0).get_type() + "(()");
-    shared_ptr<Symbol> delimiter_cb_ = make_shared<TerminalSymbol>(DelimiterToken(")", 0).get_type() + "())");
+    shared_ptr<Symbol> delimiter_ob_ = symbol_creator(DelimiterToken("(", 0).get_type() + "(()");
+    shared_ptr<Symbol> delimiter_cb_ = symbol_creator(DelimiterToken(")", 0).get_type() + "())");
     
-    shared_ptr<Symbol> string_lit_ = make_shared<TerminalSymbol>(make_shared<StringLitToken>("", 0));
-    shared_ptr<Symbol> identifier_ = make_shared<TerminalSymbol>(make_shared<IdentifierToken>("a", 0));
-    shared_ptr<Symbol> keyword_ = make_shared<TerminalSymbol>(make_shared<KeywordToken>("", 0));
+    shared_ptr<Symbol> string_lit_ = tokens_to_symbol_mapper(make_shared<StringLitToken>("", 0));
+    shared_ptr<Symbol> identifier_ = tokens_to_symbol_mapper(make_shared<IdentifierToken>("a", 0));
+    shared_ptr<Symbol> keyword_ = tokens_to_symbol_mapper(make_shared<KeywordToken>("", 0));
     
     // it can be a bad design decision, but...
     // Problem : The production rule X are stored inside the symbolA,
@@ -45,32 +79,32 @@ Parser::Parser() {
     shared_ptr<ProductionRules> literal_rules = make_shared<ProductionRules>(
         vector<pair<shared_ptr<Symbol>, vector<shared_ptr<Symbol>>>>()
     );
-    shared_ptr<Symbol> literal = make_shared<NonTerminalSymbol>("Literal", literal_rules);
+    shared_ptr<Symbol> literal = symbol_creator("Literal", literal_rules);
 
     shared_ptr<ProductionRules> params_prime_rules = make_shared<ProductionRules>(
         vector<pair<shared_ptr<Symbol>, vector<shared_ptr<Symbol>>>>()
     );
-    shared_ptr<Symbol> params_prime = make_shared<NonTerminalSymbol>("Params\'", params_prime_rules);
+    shared_ptr<Symbol> params_prime = symbol_creator("Params\'", params_prime_rules);
 
     shared_ptr<ProductionRules> params_rules = make_shared<ProductionRules>(
         vector<pair<shared_ptr<Symbol>, vector<shared_ptr<Symbol>>>>()
     );
-    shared_ptr<Symbol> params = make_shared<NonTerminalSymbol>("Params", params_rules);
+    shared_ptr<Symbol> params = symbol_creator("Params", params_rules);
 
     shared_ptr<ProductionRules> program_prime_rules = make_shared<ProductionRules>(
         vector<pair<shared_ptr<Symbol>, vector<shared_ptr<Symbol>>>>()
     );
-    shared_ptr<Symbol> program_prime = make_shared<NonTerminalSymbol>("Program\'", program_prime_rules);
+    shared_ptr<Symbol> program_prime = symbol_creator("Program\'", program_prime_rules);
 
     shared_ptr<ProductionRules> expr_rules = make_shared<ProductionRules>(
         vector<pair<shared_ptr<Symbol>, vector<shared_ptr<Symbol>>>>()
     );
-    shared_ptr<Symbol> expression = make_shared<NonTerminalSymbol>("Expr", expr_rules);
+    shared_ptr<Symbol> expression = symbol_creator("Expr", expr_rules);
     
     shared_ptr<ProductionRules> program_rules = make_shared<ProductionRules>(
         vector<pair<shared_ptr<Symbol>, vector<shared_ptr<Symbol>>>>()
     );
-    shared_ptr<Symbol> program = make_shared<NonTerminalSymbol>("Program", program_rules);
+    shared_ptr<Symbol> program = symbol_creator("Program", program_rules);
 
 
     // Rules
@@ -135,89 +169,60 @@ Parser::Parser() {
     this->start_symbol = program;
 }
 
-/*
-
-Program -> Expression Program'
-Program' -> \SpaceToken Program | \EOFToken
-
-Expression -> \DelimiterToken(() Function \SpaceToken Params | Literal //  \DelimiterToken()) is handled by Params!!
-Function -> \KeywordToken(add)|...|\KeywordToken(not_equal)
-Params -> Expression Params'
-Params' -> \SpaceToken Params | \DelimiterToken())
-Literal -> \IntLitToken(...) | \BoolLitToken(...) | \FloatLitToken(...) | \StringLitToken(...) | \IdentifierToken
 
 
-First(Literal) = {\IntLitTOken(...), \BoolLitToken(...), \FloatLitToken(...), \StringLitToken(...), \IdentifierToken}
-
-First(Expression) = {\DelimiterToken((), \IntLitToken(...), \BoolLitToken(...), 
-                     \FloatLitToken(...), \StringLitToken(...), \IdentifierToken}
-
-First(Function) = {\KeywordToken(...)}
-
-First(Params) = {\DelimiterToken((), \IntLitToken(...), \BoolLitToken(...), 
-                 \FloatLitToken(...), \StringLitToken(...), \IdentifierToken}
-
-First(Program) = {\DelimiterToken((), \IntLitToken(...), \BoolLitToken(...), {\SpaceToken},
-                  \FloatLitToken(...), \StringLitToken(...), \IdentifierToken}
-
-First(Program') = {\SpaceToken, \EOFToken}
-
-*/
-
-
-// We need separate moudle in utils like tokensMapper, to increase maintainabilit, for now lets just write things here
-
-// DUMMY FUNCTION
-std::shared_ptr<Expr> parserSymbolToASTExpr() {
-    return std::make_shared<IntLiteral>(1);
-}
-
-std::shared_ptr<Symbol> tokenToParserSymbol(std::shared_ptr<Token> token) {
-    if (token->get_type() == "DelimiterToken") {
-        return std::make_shared<TerminalSymbol>(token->to_string()); // TODO FIX LATER IMPLEMENT SEPARATE MODEL FOR IT
-    }
-    return std::make_shared<TerminalSymbol>(token);
-}
 
 void Parser::parse(std::vector<std::shared_ptr<Token>> input)  {
+    using namespace std;
+    
+    
     if (input.size() == 0)
         return;
-    int input_pos = 0;
-    std::shared_ptr<Symbol> cur_input_symb = tokenToParserSymbol(input[0]);
 
-    std::stack<std::shared_ptr<Symbol>> parsing_stack;
-    std::stack<std::shared_ptr<Expr>> parsing_stack_ast;
-    
-    parsing_stack.push(start_symbol);
-    std::shared_ptr<Expr> root = std::make_shared<ParseTempExpr>();
-    parsing_stack_ast.push(root);
+    // Init concrete syntax tree
+    shared_ptr<Expr> parse_tree_root = ExprCreator()("ParseTempExpr");
+
+
+    // Init parsing stack
+    stack<ParsingStackElement> parsing_stack;
+    parsing_stack.push(ParsingStackElement{start_symbol, parse_tree_root, nullptr, -1});
+
+    // Init current symbol
+    int input_pos = 0;
+    shared_ptr<Symbol> cur_input_symb = TokenToSymbolMapper()(input[0]);
+
+
 
     while (parsing_stack.size()) {
-        std::cerr << parsing_stack.top()->get_symbol_str() << " " << cur_input_symb->get_symbol_str() << "\n";
-        if (*parsing_stack.top() == *cur_input_symb) {
-            // INJECT VALUE TO parsing_stack_ast.top()
+
+        cerr << parsing_stack.top().symbol->get_symbol_str() << " " << cur_input_symb->get_symbol_str() << "\n";
+
+        if (*(parsing_stack.top().symbol) == *cur_input_symb) {
+            
+            parsing_stack.top().expr_ancestor->modify(parsing_stack.top().order, TokenToExprMapper()(input[input_pos]));
+            
             parsing_stack.pop();
-            parsing_stack_ast.pop();
+            
             input_pos += 1;
             if (input_pos == input.size()) {
                 assert(parsing_stack.size() == 0);
                 break;
             }
-            cur_input_symb = tokenToParserSymbol(input[input_pos]);
+            cur_input_symb = TokenToSymbolMapper()(input[input_pos]);
         }  
         else {
-            std::vector<std::shared_ptr<Symbol>> decomposed_top = parsing_stack.top()->decompose(cur_input_symb);
-            std::shared_ptr<Expr> cur_expr = parsing_stack_ast.top();
-            reverse(decomposed_top.begin(), decomposed_top.end());
+            vector<shared_ptr<Symbol>> decomposed_form = parsing_stack.top().symbol->decompose(cur_input_symb);
+            shared_ptr<Expr> cur_expr = parsing_stack.top().expr;
+            reverse(decomposed_form.begin(), decomposed_form.end());
             parsing_stack.pop();
-            parsing_stack_ast.pop();
-            for(auto symb : decomposed_top) {
-                cur_expr->push_back(parserSymbolToASTExpr());
-                parsing_stack.push(symb);
+
+            for(int ind = 0; ind < decomposed_form.size(); ind++) {
+                parsing_stack.push(
+                    ParsingStackElement{decomposed_form[ind], SymbolToExprMapper()(decomposed_form[ind]), cur_expr, ind}
+                );
+                cur_expr->push_back(parsing_stack.top().expr);
             }
         }
-        // transform concrete syntax tree to abstract syntax tree
-        // return root?
     }
 
 }
