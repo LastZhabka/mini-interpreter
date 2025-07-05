@@ -325,7 +325,7 @@ void ErrorExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
 
 
 void ParseTempExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
-    visitor->visit(*this);
+    (visitor->visit(*this));
 }
 
 
@@ -381,11 +381,13 @@ void ExprVisitor::visit(NullLiteral& expr) { }
 
 void ExprVisitor::visit(ErrorExpr& expr) { }
 
-std::string ExprVisitor::visit(ParseTempExpr& expr) {
-    return "";
+void ExprVisitor::visit(ParseTempExpr& expr) { }
+
+
+void ParserTempTypeVisitor::visit(ParseTempExpr& expr) {
+    last_type = expr.get_parse_type();
 }
 
-
-std::string ParserTempTypeVisitor::visit(ParseTempExpr& expr) {
-    return expr.get_parse_type();
+std::string ParserTempTypeVisitor::get_type_of_visited_expr() {
+    return last_type;
 }

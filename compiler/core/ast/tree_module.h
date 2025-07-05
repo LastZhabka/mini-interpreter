@@ -318,14 +318,18 @@ class ExprVisitor {
 
         virtual void visit(ErrorExpr& expr);
 
-        virtual std::string visit(ParseTempExpr& expr);
+        virtual void visit(ParseTempExpr& expr);
 };
 
 
 class ParserTempTypeVisitor : public ExprVisitor {
     private:
+        std::string last_type;
     public:
-        std::string visit(ParseTempExpr& expr) override;
+        
+        std::string get_type_of_visited_expr();
+
+        void visit(ParseTempExpr& expr) override;
 };
 
 #endif // TREE_MODULE_H
