@@ -31,3 +31,90 @@ std::shared_ptr<Symbol> TokenToSymbolMapper::operator()(std::shared_ptr<Token> t
     
     return std::make_shared<TerminalSymbol>(token_type.substr(0, token_type.size() - 5)); // Remove "Token"
 }
+
+
+std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<Token> token) {
+    if (token->get_type() == "KeywordToken") {
+        return (*this)(std::dynamic_pointer_cast<KeywordToken>(token));
+    }
+    else if (token->get_type() == "IdentifierToken") {
+        return (*this)(std::dynamic_pointer_cast<IdentifierToken>(token));
+    }
+    else if (token->get_type() == "StringLitToken") {
+        return (*this)(std::dynamic_pointer_cast<StringLitToken>(token));
+    }
+    else if (token->get_type() == "DelimiterToken") {
+        return (*this)(std::dynamic_pointer_cast<DelimiterToken>(token));
+    }
+    else if (token->get_type() == "ErrorToken") {
+        return (*this)(std::dynamic_pointer_cast<ErrorToken>(token));
+    }
+    else if (token->get_type() == "IntLitToken") {
+        return (*this)(std::dynamic_pointer_cast<IntLitToken>(token));
+    }
+    else if (token->get_type() == "FloatLitToken") {
+        return (*this)(std::dynamic_pointer_cast<FloatLitToken>(token));
+    }
+    else if (token->get_type() == "BoolLitToken") {
+        return (*this)(std::dynamic_pointer_cast<BoolLitToken>(token));
+    }
+    else if (token->get_type() == "NullLitToken") {
+        return (*this)(std::dynamic_pointer_cast<NullLitToken>(token));
+    }
+    else if (token->get_type() == "SpaceToken") {
+        return (*this)(std::dynamic_pointer_cast<SpaceToken>(token));
+    }
+    else if (token->get_type() == "EOFToken") {
+        return (*this)(std::dynamic_pointer_cast<EOFToken>(token));
+    } else {
+        assert(0);
+    }
+}
+
+
+std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<KeywordToken> token) {
+    ExprCreator expr_creator;
+    return ExprCreator()("Keyword(" + token->get_value() + ")");
+}
+
+std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<IdentifierToken> token) {
+    std::shared_ptr<Expr> expr = ExprCreator()("Identifier");
+    expr->push_back(std::make_shared<StringLiteral>(token->get_value()));
+    return expr;
+}
+
+std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<StringLitToken> token){
+    return std::make_shared<StringLiteral>(token->get_value());
+}
+
+std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<DelimiterToken> token) {
+    return std::make_shared<ParseTempExpr>();
+}
+
+std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<ErrorToken> token) {
+    return std::make_shared<ErrorExpr>(token->get_value());
+}
+
+std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<IntLitToken> token) {
+    return std::make_shared<IntLiteral>(token->get_value());
+}
+
+std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<FloatLitToken> token) {
+    return std::make_shared<FloatLiteral>(token->get_value());
+}
+
+std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<BoolLitToken> token) {
+    return std::make_shared<BoolLiteral>(token->get_value());
+}
+
+std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<NullLitToken> token) {
+    return std::make_shared<NullLiteral>();
+}
+
+std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<SpaceToken> token) {
+    return std::make_shared<ParseTempExpr>();
+}
+
+std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<EOFToken> token) {
+    return std::make_shared<ParseTempExpr>();
+}

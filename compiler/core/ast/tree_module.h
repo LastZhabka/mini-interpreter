@@ -50,6 +50,8 @@ class Expr {
     public:
         virtual ~Expr(); //  = default
 
+        void modify(int index, std::shared_ptr<Expr> elem);
+
         void push_back(std::shared_ptr<Expr> elem);
 };  
 
@@ -205,8 +207,9 @@ class NullLiteral : public Expr {
 
 class ErrorExpr : public Expr {
     private:
+        std::string value;
     public:
-        ErrorExpr();
+        ErrorExpr(std::string value);
 };
 
 // expr for the parse tree (dummy)
@@ -222,8 +225,6 @@ class ParseTempExpr : public Expr {
     public:
         ParseTempExpr();
 };
-
-
 
 class ExprCreator {
     public:
