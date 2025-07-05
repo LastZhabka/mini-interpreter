@@ -17,7 +17,6 @@ std::string Symbol::get_symbol_str() const {
 
 size_t Symbol::get_hash() {
     return std::hash<std::string>() (symbol);   
-    //               hasher           text
 }
 
 bool Symbol::operator==(const Symbol& other) const {
@@ -36,7 +35,6 @@ bool SymbolEqual::operator()(const std::shared_ptr<Symbol>& lhs, const std::shar
 }
 
 //TerminalSymbol
-TerminalSymbol::TerminalSymbol(std::shared_ptr<Token> token) : Symbol(token->get_type().substr(0, token->get_type().size() - 5)) { }
 
 TerminalSymbol::TerminalSymbol(std::string symbol) : Symbol(symbol) { }
 
@@ -82,14 +80,24 @@ void ProductionRules::add_rules(std::vector<std::pair<std::shared_ptr<Symbol>, s
     }
 }
 
-std::vector<std::shared_ptr<Symbol>> ProductionRules::get_rule(std::shared_ptr<Symbol> target) {
-    if (!production_rules.count(target)) { // Don't create x
+std::vector<std::shared_ptr<Symbol>> ProductionRules::get_rule(std::shared_ptr<Symbol> first) {
+    if (!production_rules.count(first)) { // Don't create x
         assert(0); // parsing problem
         return std::vector<std::shared_ptr<Symbol>>();
     }
-    return production_rules[target];
+    return production_rules[first];
 }
 
+
+//Factory method for symbol, non-terminal symbol
+std::shared_ptr<Symbol> SymbolCreator::operator()(std::string symbol, std::shared_ptr<ProductionRules> production_rules) {
+    return std::make_shared<NonTerminalSymbol>(symbol, production_rules);
+}
+
+//Factory method for symbol, terminal symbol
+std::shared_ptr<Symbol> SymbolCreator::operator()(std::string symbol) {
+    return std::make_shared<TerminalSymbol>(symbol);
+}
 
 /*
 

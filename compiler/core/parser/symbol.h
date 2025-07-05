@@ -44,8 +44,6 @@ class TerminalSymbol : public Symbol {
     private:
     public:
 
-        TerminalSymbol(std::shared_ptr<Token> token); 
-
         TerminalSymbol(std::string symbol);
         
         std::vector<std::shared_ptr<Symbol>> decompose(std::shared_ptr<Symbol> target_first) override;
@@ -83,7 +81,16 @@ class ProductionRules {
         
         void add_rules(std::vector<std::pair<std::shared_ptr<Symbol>, std::vector<std::shared_ptr<Symbol>>>> rules);
 
-        std::vector<std::shared_ptr<Symbol>> get_rule(std::shared_ptr<Symbol> target);
+        std::vector<std::shared_ptr<Symbol>> get_rule(std::shared_ptr<Symbol> first);
+};
+
+// Factory class for the parser symbols
+class SymbolCreator {
+    private:
+    public:
+        std::shared_ptr<Symbol> operator()(std::string symbol);
+
+        std::shared_ptr<Symbol> operator()(std::string symbol, std::shared_ptr<ProductionRules> production_rules);
 };
 
 #endif // TOKENS_H
