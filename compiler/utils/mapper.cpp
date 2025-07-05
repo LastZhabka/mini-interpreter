@@ -8,15 +8,17 @@
 std::shared_ptr<Expr> SymbolToExprMapper::operator()(std::shared_ptr<Symbol> symbol) {
     ExprCreator expr_creator;
     std::string symbol_str = symbol->get_symbol_str();
-    if (
-        symbol_str == "Literal" || 
-        symbol_str == "Params" || 
-        symbol_str == "Params\'" ||
-        symbol_str == "Program\'" ||
-        symbol_str == "Expr" ||
-        symbol_str == "Program"
-    ) {
+    if (symbol_str == "Params" || symbol_str == "Params\'") {
         return expr_creator("ParseTempExpr");
+    }
+    else if (symbol_str == "Literal") {
+        return expr_creator("ParseTempExpr(Literal)");
+    } 
+    else if (symbol_str == "Program" || symbol_str == "Program\'") {
+        return expr_creator("ParseTempExpr(Program)");
+    }
+    else if( symbol_str == "Expr") {
+        return expr_creator("ParseTempExpr(Expr)");
     }
     return expr_creator(symbol->get_symbol_str());
 }
@@ -88,7 +90,7 @@ std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<StringLitTok
 }
 
 std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<DelimiterToken> token) {
-    return std::make_shared<ParseTempExpr>();
+    return ExprCreator()("ParseTempExpr");
 }
 
 std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<ErrorToken> token) {
@@ -112,9 +114,9 @@ std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<NullLitToken
 }
 
 std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<SpaceToken> token) {
-    return std::make_shared<ParseTempExpr>();
+    return ExprCreator()("ParseTempExpr");
 }
 
 std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<EOFToken> token) {
-    return std::make_shared<ParseTempExpr>();
+    return ExprCreator()("ParseTempExpr");
 }

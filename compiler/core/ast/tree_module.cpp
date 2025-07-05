@@ -8,7 +8,9 @@
 
 Expr::~Expr() = default;
 
-// CONSTRUCTORS
+std::vector<std::shared_ptr<Expr>> Expr::get_kids() {
+    return target;
+}
 
 void Expr::push_back(std::shared_ptr<Expr> element) {
     target.push_back(element);
@@ -18,11 +20,12 @@ void Expr::modify(int index, std::shared_ptr<Expr> elem) {
     target[index] = elem;
 }
 
+// CONSTRUCTORS
+
 
 Puts::Puts(std::shared_ptr<Expr> target) {
     this->push_back(target);
 }
-ParseTempFunctionExpr::ParseTempFunctionExpr() { }
 
 ErrorExpr::ErrorExpr(std::string value) : value(value) { }
 
@@ -119,7 +122,11 @@ BoolLiteral::BoolLiteral(bool value) : value(value) { }
 
 NullLiteral::NullLiteral() { }
 
-ParseTempExpr::ParseTempExpr() { }
+ParseTempExpr::ParseTempExpr(std::string parse_type) : parse_type(parse_type) { }
+
+std::string ParseTempExpr::get_parse_type() {
+    return parse_type;
+}
 
 // CREATOR i.e. FACTORY METHOD
 
@@ -192,17 +199,193 @@ std::shared_ptr<Expr> ExprCreator::operator()(std::string expr_type) {
     else if (expr_type == "NullLit") {
         return std::make_shared<NullLiteral>();
     }
-    else if (expr_type == "Keyword") {
-        return std::make_shared<ParseTempFunctionExpr>();
-    }
-    else if (expr_type == "ParseTempExpr" || expr_type == "Space" || expr_type == "EOF" || expr_type.substr(0, 14) == "DelimiterToken") {
-        return std::make_shared<ParseTempExpr>();
-    }
     else if (expr_type == "Error") {
         return std::make_shared<ErrorExpr>("Dummy Error");
+    }
+    else if (expr_type == "Keyword") {
+        return std::make_shared<ParseTempExpr>("");
+    }
+    else if (expr_type == "Space" || expr_type == "EOF" || expr_type == "ParseTempExpr" || expr_type.substr(0, 14) == "DelimiterToken") {
+        return std::make_shared<ParseTempExpr>("");
+    }
+    else if (expr_type == "ParseTempExpr(Literal)") {
+        return std::make_shared<ParseTempExpr>("Literal");
+    }
+    else if (expr_type == "ParseTempExpr(Program)") {
+        return std::make_shared<ParseTempExpr>("Program");
+    }
+    else if (expr_type == "ParseTempExpr(Expr)") {
+        return std::make_shared<ParseTempExpr>("Expr");
     }
     else {
         std::cerr << expr_type << "\n";
         assert(0);
     }
+}
+
+
+
+// VISITOR
+
+void Puts::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void Addition::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void Subtraction::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void Multiplication::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void Division::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void GreaterThan::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void LowerThan::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void Equal::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void NotEqual::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void Min::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void Abs::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void Assignment::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void Concatenation::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void Replacement::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void Substring::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void Lowercase::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void Uppercase::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void Identifier::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void IntLiteral::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void FloatLiteral::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void StringLiteral::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void BoolLiteral::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void NullLiteral::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void ErrorExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+
+void ParseTempExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+
+// Visitor
+
+ExprVisitor::~ExprVisitor() = default;
+
+void ExprVisitor::visit(Puts& expr) { }
+
+void ExprVisitor::visit(Addition& expr) { }
+
+void ExprVisitor::visit(Subtraction& expr) { }
+
+void ExprVisitor::visit(Multiplication& expr) { }
+
+void ExprVisitor::visit(Division& expr) { }
+
+void ExprVisitor::visit(GreaterThan& expr) { }
+
+void ExprVisitor::visit(LowerThan& expr) { }
+
+void ExprVisitor::visit(Equal& expr) { }
+
+void ExprVisitor::visit(NotEqual& expr) { }
+
+void ExprVisitor::visit(Min& expr) { }
+
+void ExprVisitor::visit(Abs& expr) { }
+
+void ExprVisitor::visit(Assignment& expr) { }
+
+void ExprVisitor::visit(Concatenation& expr) { }
+
+void ExprVisitor::visit(Replacement& expr) { }
+
+void ExprVisitor::visit(Substring& expr) { }
+
+void ExprVisitor::visit(Lowercase& expr) { }
+
+void ExprVisitor::visit(Uppercase& expr) { }
+
+void ExprVisitor::visit(Identifier& expr) { }
+
+void ExprVisitor::visit(IntLiteral& expr) { }
+
+void ExprVisitor::visit(FloatLiteral& expr) { }
+
+void ExprVisitor::visit(StringLiteral& expr) { }
+
+void ExprVisitor::visit(BoolLiteral& expr) { }
+
+void ExprVisitor::visit(NullLiteral& expr) { }
+
+void ExprVisitor::visit(ErrorExpr& expr) { }
+
+std::string ExprVisitor::visit(ParseTempExpr& expr) {
+    return "";
+}
+
+
+std::string ParserTempTypeVisitor::visit(ParseTempExpr& expr) {
+    return expr.get_parse_type();
 }
