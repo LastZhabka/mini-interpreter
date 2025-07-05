@@ -1,5 +1,7 @@
-#include "tree_module.h"
 #include <memory>
+#include <cassert>
+
+#include "tree_module.h"
 
 
 
@@ -14,6 +16,8 @@ void Expr::push_back(std::shared_ptr<Expr> element) {
 Puts::Puts(std::shared_ptr<Expr> target) {
     this->push_back(target);
 }
+
+ErrorExpr::ErrorExpr() { }
 
 Addition::Addition(std::vector<std::shared_ptr<Expr>> operands) {
     for (auto operand : operands)
@@ -167,23 +171,32 @@ std::shared_ptr<Expr> ExprCreator::operator()(std::string expr_type) {
     else if (expr_type == "Identifier") {
         return std::make_shared<Identifier>(nullptr); //??????????
     }
-    else if (expr_type == "IntLiteral") {
+    else if (expr_type == "IntLit") {
         return std::make_shared<IntLiteral>(0);
     }
-    else if (expr_type == "FloatLiteral") {
+    else if (expr_type == "FloatLit") {
         return std::make_shared<FloatLiteral>(0);
     }
-    else if (expr_type == "StringLiteral") {
+    else if (expr_type == "StringLit") {
         return std::make_shared<StringLiteral>("");
     }
-    else if (expr_type == "BoolLiteral") {
+    else if (expr_type == "BoolLit") {
         return std::make_shared<BoolLiteral>(false);
     }
-    else if (expr_type == "NullLiteral") {
+    else if (expr_type == "NullLit") {
         return std::make_shared<NullLiteral>();
+    }
+    else if (expr_type == "Keyword") {
+        return std::make_shared<ParseTempFunctionExpr>();
     }
     else if (expr_type == "ParseTempExpr") {
         return std::make_shared<ParseTempExpr>();
+    }
+    else if (expr_type == "Error") {
+        return std::make_shared<ErrorExpr>();
+    }
+    else {
+        assert(0);
     }
 }
 
