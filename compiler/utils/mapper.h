@@ -9,9 +9,15 @@ And from tokens to AST Nodes
 #include <memory>
 #include <vector>
 
-#include "../lexer/tokens.h"
-#include "../parser/symbol.h"
-#include "../ast/tree_module.h"
+#include "../core/lexer/tokens.h"
+#include "../core/parser/symbol.h"
+#include "../core/ast/tree_module.h"
+
+class TokenToSymbolMapper {
+    private:
+    public:
+        std::shared_ptr<Symbol> operator()(std::shared_ptr<Token> symbol);
+};
 
 class SymbolToExprMapper {
     private:
