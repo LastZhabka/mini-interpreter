@@ -36,7 +36,7 @@ bool SymbolEqual::operator()(const std::shared_ptr<Symbol>& lhs, const std::shar
 }
 
 //TerminalSymbol
-TerminalSymbol::TerminalSymbol(std::shared_ptr<Token> token) : Symbol(token->get_type()) { }
+TerminalSymbol::TerminalSymbol(std::shared_ptr<Token> token) : Symbol(token->get_type().substr(0, token->get_type().size() - 5)) { }
 
 TerminalSymbol::TerminalSymbol(std::string symbol) : Symbol(symbol) { }
 
