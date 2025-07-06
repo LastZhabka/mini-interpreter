@@ -20,6 +20,10 @@ void Expr::modify(int index, std::shared_ptr<Expr> elem) {
     target[index] = elem;
 }
 
+void Expr::reassign_children(std::vector<std::shared_ptr<Expr>> target_) {
+    target = target_;
+}
+
 // CONSTRUCTORS
 
 
@@ -208,11 +212,20 @@ std::shared_ptr<Expr> ExprCreator::operator()(std::string expr_type) {
     else if (expr_type == "Space" || expr_type == "EOF" || expr_type == "ParseTempExpr" || expr_type.substr(0, 14) == "DelimiterToken") {
         return std::make_shared<ParseTempExpr>("");
     }
+    else if (expr_type == "ParseTempExpr(Params)") {
+        return std::make_shared<ParseTempExpr>("Params");
+    }
+    else if (expr_type == "ParseTempExpr(Params\')") {
+        return std::make_shared<ParseTempExpr>("Params\'");
+    }
     else if (expr_type == "ParseTempExpr(Literal)") {
         return std::make_shared<ParseTempExpr>("Literal");
     }
     else if (expr_type == "ParseTempExpr(Program)") {
         return std::make_shared<ParseTempExpr>("Program");
+    }
+    else if (expr_type == "ParseTempExpr(Program\')") {
+        return std::make_shared<ParseTempExpr>("Program\'");
     }
     else if (expr_type == "ParseTempExpr(Expr)") {
         return std::make_shared<ParseTempExpr>("Expr");
@@ -385,7 +398,10 @@ void ExprVisitor::visit(ParseTempExpr& expr) { }
 
 
 void ParserTempTypeVisitor::visit(ParseTempExpr& expr) {
-    last_type = expr.get_parse_type();
+    last_type = "(" + expr.get_parse_type() + ")";
+}
+void ParserTempTypeVisitor::clear() {
+    last_type = "";
 }
 
 std::string ParserTempTypeVisitor::get_type_of_visited_expr() {

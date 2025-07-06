@@ -8,14 +8,20 @@
 std::shared_ptr<Expr> SymbolToExprMapper::operator()(std::shared_ptr<Symbol> symbol) {
     ExprCreator expr_creator;
     std::string symbol_str = symbol->get_symbol_str();
-    if (symbol_str == "Params" || symbol_str == "Params\'") {
-        return expr_creator("ParseTempExpr");
+    if (symbol_str == "Params") {
+        return expr_creator("ParseTempExpr(Params)");
+    }
+    else if(symbol_str == "Params\'") {
+        return expr_creator("ParseTempExpr(Params\')");
     }
     else if (symbol_str == "Literal") {
         return expr_creator("ParseTempExpr(Literal)");
     } 
-    else if (symbol_str == "Program" || symbol_str == "Program\'") {
+    else if (symbol_str == "Program") {
         return expr_creator("ParseTempExpr(Program)");
+    }
+    else if(symbol_str == "Program\'") {
+        return expr_creator("ParseTempExpr(Program\')");
     }
     else if( symbol_str == "Expr") {
         return expr_creator("ParseTempExpr(Expr)");

@@ -29,6 +29,8 @@ class Expr {
 
         std::vector<std::shared_ptr<Expr>> get_kids();
 
+        void reassign_children(std::vector<std::shared_ptr<Expr>> target_);
+
         void modify(int index, std::shared_ptr<Expr> elem);
 
         void push_back(std::shared_ptr<Expr> elem);
@@ -327,6 +329,8 @@ class ParserTempTypeVisitor : public ExprVisitor {
         std::string last_type;
     public:
         
+        void clear();
+
         std::string get_type_of_visited_expr();
 
         void visit(ParseTempExpr& expr) override;
