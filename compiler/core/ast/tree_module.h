@@ -18,7 +18,7 @@ enum class Type {
 class ExprVisitor;
 
 
-// abstract syntax tree
+// Abstract syntax tree
 class Expr {
     private:
         std::vector<std::shared_ptr<Expr>> target; // Tree structure
@@ -40,150 +40,149 @@ class Expr {
 
 // Functions:
 
-class Puts : public Expr {
+class PutsExpr : public Expr {
     private:
     public:
-        Puts(std::shared_ptr<Expr> target);
+        PutsExpr(std::shared_ptr<Expr> target);
 
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
-class Addition : public Expr{
+class AdditionExpr : public Expr{
     private:
     public:
-        Addition(std::vector<std::shared_ptr<Expr>> operands);
+        AdditionExpr(std::vector<std::shared_ptr<Expr>> operands);
 
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
-class Subtraction : public Expr{
+class SubtractionExpr : public Expr{
     private:
     public:
-        Subtraction(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
+        SubtractionExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
-class Multiplication : public Expr{
+class MultiplicationExpr : public Expr{
     private:
     public:
-        Multiplication(std::vector<std::shared_ptr<Expr>> operands);
+        MultiplicationExpr(std::vector<std::shared_ptr<Expr>> operands);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
-class Division : public Expr{
+class DivisionExpr : public Expr{
     private:
     public:
-        Division(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
+        DivisionExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
-class GreaterThan : public Expr{
+class GreaterThanExpr : public Expr{
     private:
     public:
-        GreaterThan(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
+        GreaterThanExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
-class LowerThan : public Expr{
+class LowerThanExpr : public Expr{
     private:
     public:
-        LowerThan(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
+        LowerThanExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
-class Equal : public Expr{
+class EqualExpr : public Expr{
     private:
     public:
-        Equal(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
+        EqualExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
-class NotEqual : public Expr{
+class NotEqualExpr : public Expr{
     private:
     public:
-        NotEqual(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
+        NotEqualExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
-class Min : public Expr{
+class MinExpr : public Expr{
     private:
     public:
-        Min(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
+        MinExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
-class Abs : public Expr{
+class AbsExpr : public Expr{
     private:
     public:
-        Abs(std::shared_ptr<Expr> target);
+        AbsExpr(std::shared_ptr<Expr> target);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
-// Assignment  x := 1
-class Assignment : public Expr{
+// SetExpr  x := 1
+class SetExpr : public Expr{
     private:
     public:
-        Assignment(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
+        SetExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 // String Ops
-class Concatenation : public Expr{
+class ConcatExpr : public Expr{
     private:
     public:
-        Concatenation(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
+        ConcatExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
-class Replacement : public Expr{
+class ReplaceExpr : public Expr{
     private:
     public:
-        Replacement(std::shared_ptr<Expr> source, std::shared_ptr<Expr> target, std::shared_ptr<Expr> replacement);
+        ReplaceExpr(std::shared_ptr<Expr> source, std::shared_ptr<Expr> target, std::shared_ptr<Expr> ReplaceExpr);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
-class Substring : public Expr{
+class SubstrExpr : public Expr{
     private:
     public:
-        Substring(std::shared_ptr<Expr> source, std::shared_ptr<Expr> l, std::shared_ptr<Expr> r);
+        SubstrExpr(std::shared_ptr<Expr> source, std::shared_ptr<Expr> l, std::shared_ptr<Expr> r);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
-class Lowercase : public Expr{
+class LowercaseExpr : public Expr{
     private:
     public:
-        Lowercase(std::shared_ptr<Expr> target);
+        LowercaseExpr(std::shared_ptr<Expr> target);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
-class Uppercase : public Expr{
+class UppercaseExpr : public Expr{
     private:
     public:
-        Uppercase(std::shared_ptr<Expr> target);
+        UppercaseExpr(std::shared_ptr<Expr> target);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
 // Identifier
-
-class Identifier : public Expr {
+class IdentifierExpr : public Expr {
     private:
     public:
-        Identifier(std::shared_ptr<Expr> name);
+        IdentifierExpr(std::shared_ptr<Expr> name);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
@@ -272,41 +271,41 @@ class ExprVisitor {
     public:
         virtual ~ExprVisitor();
 
-        virtual void visit(Puts& expr);
+        virtual void visit(PutsExpr& expr);
 
-        virtual void visit(Addition& expr);
+        virtual void visit(AdditionExpr& expr);
         
-        virtual void visit(Subtraction& expr);
+        virtual void visit(SubtractionExpr& expr);
         
-        virtual void visit(Multiplication& expr);
+        virtual void visit(MultiplicationExpr& expr);
         
-        virtual void visit(Division& expr);
+        virtual void visit(DivisionExpr& expr);
         
-        virtual void visit(GreaterThan& expr);
+        virtual void visit(GreaterThanExpr& expr);
         
-        virtual void visit(LowerThan& expr);
+        virtual void visit(LowerThanExpr& expr);
         
-        virtual void visit(Equal& expr);
+        virtual void visit(EqualExpr& expr);
         
-        virtual void visit(NotEqual& expr);
+        virtual void visit(NotEqualExpr& expr);
 
-        virtual void visit(Min& expr);
+        virtual void visit(MinExpr& expr);
         
-        virtual void visit(Abs& expr);
+        virtual void visit(AbsExpr& expr);
 
-        virtual void visit(Assignment& expr);
+        virtual void visit(SetExpr& expr);
         
-        virtual void visit(Concatenation& expr);
+        virtual void visit(ConcatExpr& expr);
         
-        virtual void visit(Replacement& expr);
+        virtual void visit(ReplaceExpr& expr);
         
-        virtual void visit(Substring& expr);
+        virtual void visit(SubstrExpr& expr);
 
-        virtual void visit(Lowercase& expr);
+        virtual void visit(LowercaseExpr& expr);
         
-        virtual void visit(Uppercase& expr);
+        virtual void visit(UppercaseExpr& expr);
 
-        virtual void visit(Identifier& expr);
+        virtual void visit(IdentifierExpr& expr);
         
         virtual void visit(IntLiteral& expr);
 
@@ -332,41 +331,41 @@ class ExprTypeVisitor : public ExprVisitor {
 
         std::string get_type_of_visited_expr();
 
-        void visit(Puts& expr);
+        void visit(PutsExpr& expr);
 
-        void visit(Addition& expr);
+        void visit(AdditionExpr& expr);
         
-        void visit(Subtraction& expr);
+        void visit(SubtractionExpr& expr);
         
-        void visit(Multiplication& expr);
+        void visit(MultiplicationExpr& expr);
         
-        void visit(Division& expr);
+        void visit(DivisionExpr& expr);
         
-        void visit(GreaterThan& expr);
+        void visit(GreaterThanExpr& expr);
         
-        void visit(LowerThan& expr);
+        void visit(LowerThanExpr& expr);
         
-        void visit(Equal& expr);
+        void visit(EqualExpr& expr);
         
-        void visit(NotEqual& expr);
+        void visit(NotEqualExpr& expr);
 
-        void visit(Min& expr);
+        void visit(MinExpr& expr);
         
-        void visit(Abs& expr);
+        void visit(AbsExpr& expr);
 
-        void visit(Assignment& expr);
+        void visit(SetExpr& expr);
         
-        void visit(Concatenation& expr);
+        void visit(ConcatExpr& expr);
         
-        void visit(Replacement& expr);
+        void visit(ReplaceExpr& expr);
         
-        void visit(Substring& expr);
+        void visit(SubstrExpr& expr);
 
-        void visit(Lowercase& expr);
+        void visit(LowercaseExpr& expr);
         
-        void visit(Uppercase& expr);
+        void visit(UppercaseExpr& expr);
 
-        void visit(Identifier& expr);
+        void visit(IdentifierExpr& expr);
         
         void visit(IntLiteral& expr);
 

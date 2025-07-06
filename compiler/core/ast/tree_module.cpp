@@ -27,92 +27,92 @@ void Expr::reassign_children(std::vector<std::shared_ptr<Expr>> target_) {
 // CONSTRUCTORS
 
 
-Puts::Puts(std::shared_ptr<Expr> target) {
+PutsExpr::PutsExpr(std::shared_ptr<Expr> target) {
     this->push_back(target);
 }
 
 ErrorExpr::ErrorExpr(std::string value) : value(value) { }
 
-Addition::Addition(std::vector<std::shared_ptr<Expr>> operands) {
+AdditionExpr::AdditionExpr(std::vector<std::shared_ptr<Expr>> operands) {
     for (auto operand : operands)
         this->push_back(operand);
 }  
 
-Subtraction::Subtraction(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
+SubtractionExpr::SubtractionExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
     this->push_back(lhs);
     this->push_back(rhs);
 }
 
-Multiplication::Multiplication(std::vector<std::shared_ptr<Expr>> operands) {
+MultiplicationExpr::MultiplicationExpr(std::vector<std::shared_ptr<Expr>> operands) {
     for (auto operand : operands)
         this->push_back(operand);
 }  
 
-Division::Division(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
+DivisionExpr::DivisionExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
     this->push_back(lhs);
     this->push_back(rhs);
 }
 
-GreaterThan::GreaterThan(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
+GreaterThanExpr::GreaterThanExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
     this->push_back(lhs);
     this->push_back(rhs);
 }
 
-LowerThan::LowerThan(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
+LowerThanExpr::LowerThanExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
     this->push_back(lhs);
     this->push_back(rhs);
 }
 
-Equal::Equal(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
+EqualExpr::EqualExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
     this->push_back(lhs);
     this->push_back(rhs);
 }
 
-NotEqual::NotEqual(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
+NotEqualExpr::NotEqualExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
     this->push_back(lhs);
     this->push_back(rhs);
 }
 
-Min::Min(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
+MinExpr::MinExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
     this->push_back(lhs);
     this->push_back(rhs);
 }
 
-Abs::Abs(std::shared_ptr<Expr> target) {
+AbsExpr::AbsExpr(std::shared_ptr<Expr> target) {
     this->push_back(target);
 }
 
-Assignment::Assignment(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
+SetExpr::SetExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
     this->push_back(lhs);
     this->push_back(rhs);
 }
 
-Concatenation::Concatenation(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
+ConcatExpr::ConcatExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
     this->push_back(lhs);
     this->push_back(rhs);
 }
 
-Replacement::Replacement(std::shared_ptr<Expr> source, std::shared_ptr<Expr> target, std::shared_ptr<Expr> replacement) {
+ReplaceExpr::ReplaceExpr(std::shared_ptr<Expr> source, std::shared_ptr<Expr> target, std::shared_ptr<Expr> replacement) {
     this->push_back(source);
     this->push_back(target);
     this->push_back(replacement);
 }
 
-Substring::Substring(std::shared_ptr<Expr> source, std::shared_ptr<Expr> l, std::shared_ptr<Expr> r) {
+SubstrExpr::SubstrExpr(std::shared_ptr<Expr> source, std::shared_ptr<Expr> l, std::shared_ptr<Expr> r) {
     this->push_back(source);
     this->push_back(l);
     this->push_back(r);
 }
 
-Lowercase::Lowercase(std::shared_ptr<Expr> target) {
+LowercaseExpr::LowercaseExpr(std::shared_ptr<Expr> target) {
     this->push_back(target);
 }
 
-Uppercase::Uppercase(std::shared_ptr<Expr> target) {
+UppercaseExpr::UppercaseExpr(std::shared_ptr<Expr> target) {
     this->push_back(target);
 }
 
-Identifier::Identifier(std::shared_ptr<Expr> target) {
+IdentifierExpr::IdentifierExpr(std::shared_ptr<Expr> target) {
     this->push_back(target);
 }
 
@@ -138,55 +138,55 @@ ExprCreator::ExprCreator() = default;
 
 std::shared_ptr<Expr> ExprCreator::operator()(std::string expr_type) {
     if (expr_type == "Keyword(add)") {
-        return std::make_shared<Addition>(std::vector<std::shared_ptr<Expr>>(0));
+        return std::make_shared<AdditionExpr>(std::vector<std::shared_ptr<Expr>>(0));
     }
     else if (expr_type == "Keyword(subtract)") {
-        return std::make_shared<Subtraction>(nullptr, nullptr);
+        return std::make_shared<SubtractionExpr>(nullptr, nullptr);
     }
     else if (expr_type == "Keyword(multiply)") {
-        return std::make_shared<Multiplication>(std::vector<std::shared_ptr<Expr>>(0));
+        return std::make_shared<MultiplicationExpr>(std::vector<std::shared_ptr<Expr>>(0));
     }
     else if (expr_type == "Keyword(divide)") {
-        return std::make_shared<Division>(nullptr, nullptr);
+        return std::make_shared<DivisionExpr>(nullptr, nullptr);
     }
     else if (expr_type == "Keyword(gt)") {
-        return std::make_shared<GreaterThan>(nullptr, nullptr);
+        return std::make_shared<GreaterThanExpr>(nullptr, nullptr);
     }
     else if (expr_type == "Keyword(lt)") {
-        return std::make_shared<LowerThan>(nullptr, nullptr);
+        return std::make_shared<LowerThanExpr>(nullptr, nullptr);
     }
     else if (expr_type == "Keyword(equal)") {
-        return std::make_shared<Equal>(nullptr, nullptr);
+        return std::make_shared<EqualExpr>(nullptr, nullptr);
     }
     else if (expr_type == "Keyword(not_equal)") {
-        return std::make_shared<NotEqual>(nullptr, nullptr);
+        return std::make_shared<NotEqualExpr>(nullptr, nullptr);
     }
     else if (expr_type == "Keyword(min)") {
-        return std::make_shared<Min>(nullptr, nullptr);
+        return std::make_shared<MinExpr>(nullptr, nullptr);
     }
     else if (expr_type == "Keyword(abs)") {
-        return std::make_shared<Abs>(nullptr);
+        return std::make_shared<AbsExpr>(nullptr);
     }
     else if (expr_type == "Keyword(set)") {
-        return std::make_shared<Assignment>(nullptr, nullptr);
+        return std::make_shared<SetExpr>(nullptr, nullptr);
     }
     else if (expr_type == "Keyword(concat)") {
-        return std::make_shared<Concatenation>(nullptr, nullptr);
+        return std::make_shared<ConcatExpr>(nullptr, nullptr);
     }
     else if (expr_type == "Keyword(replace)") {
-        return std::make_shared<Replacement>(nullptr, nullptr, nullptr);
+        return std::make_shared<ReplaceExpr>(nullptr, nullptr, nullptr);
     }
     else if (expr_type == "Keyword(substring)") {
-        return std::make_shared<Substring>(nullptr, nullptr, nullptr);
+        return std::make_shared<SubstrExpr>(nullptr, nullptr, nullptr);
     }
     else if (expr_type == "Keyword(lowercase)") {
-        return std::make_shared<Lowercase>(nullptr);
+        return std::make_shared<LowercaseExpr>(nullptr);
     }
     else if (expr_type == "Keyword(uppercase)") {
-        return std::make_shared<Uppercase>(nullptr);
+        return std::make_shared<UppercaseExpr>(nullptr);
     }
     else if (expr_type == "Identifier") {
-        return std::make_shared<Identifier>(nullptr); //??????????
+        return std::make_shared<IdentifierExpr>(nullptr); //??????????
     }
     else if (expr_type == "IntLit") {
         return std::make_shared<IntLiteral>(0);
@@ -240,75 +240,75 @@ std::shared_ptr<Expr> ExprCreator::operator()(std::string expr_type) {
 
 // VISITOR
 
-void Puts::accept(std::shared_ptr<ExprVisitor> visitor) {
+void PutsExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
-void Addition::accept(std::shared_ptr<ExprVisitor> visitor) {
+void AdditionExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
-void Subtraction::accept(std::shared_ptr<ExprVisitor> visitor) {
+void SubtractionExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
-void Multiplication::accept(std::shared_ptr<ExprVisitor> visitor) {
+void MultiplicationExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
-void Division::accept(std::shared_ptr<ExprVisitor> visitor) {
+void DivisionExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
-void GreaterThan::accept(std::shared_ptr<ExprVisitor> visitor) {
+void GreaterThanExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
-void LowerThan::accept(std::shared_ptr<ExprVisitor> visitor) {
+void LowerThanExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
-void Equal::accept(std::shared_ptr<ExprVisitor> visitor) {
+void EqualExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
-void NotEqual::accept(std::shared_ptr<ExprVisitor> visitor) {
+void NotEqualExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
-void Min::accept(std::shared_ptr<ExprVisitor> visitor) {
+void MinExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
-void Abs::accept(std::shared_ptr<ExprVisitor> visitor) {
+void AbsExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
-void Assignment::accept(std::shared_ptr<ExprVisitor> visitor) {
+void SetExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
-void Concatenation::accept(std::shared_ptr<ExprVisitor> visitor) {
+void ConcatExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
-void Replacement::accept(std::shared_ptr<ExprVisitor> visitor) {
+void ReplaceExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
-void Substring::accept(std::shared_ptr<ExprVisitor> visitor) {
+void SubstrExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
-void Lowercase::accept(std::shared_ptr<ExprVisitor> visitor) {
+void LowercaseExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
-void Uppercase::accept(std::shared_ptr<ExprVisitor> visitor) {
+void UppercaseExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
-void Identifier::accept(std::shared_ptr<ExprVisitor> visitor) {
+void IdentifierExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
@@ -346,41 +346,41 @@ void ParseTempExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
 
 ExprVisitor::~ExprVisitor() = default;
 
-void ExprVisitor::visit(Puts& expr) { }
+void ExprVisitor::visit(PutsExpr& expr) { }
 
-void ExprVisitor::visit(Addition& expr) { }
+void ExprVisitor::visit(AdditionExpr& expr) { }
 
-void ExprVisitor::visit(Subtraction& expr) { }
+void ExprVisitor::visit(SubtractionExpr& expr) { }
 
-void ExprVisitor::visit(Multiplication& expr) { }
+void ExprVisitor::visit(MultiplicationExpr& expr) { }
 
-void ExprVisitor::visit(Division& expr) { }
+void ExprVisitor::visit(DivisionExpr& expr) { }
 
-void ExprVisitor::visit(GreaterThan& expr) { }
+void ExprVisitor::visit(GreaterThanExpr& expr) { }
 
-void ExprVisitor::visit(LowerThan& expr) { }
+void ExprVisitor::visit(LowerThanExpr& expr) { }
 
-void ExprVisitor::visit(Equal& expr) { }
+void ExprVisitor::visit(EqualExpr& expr) { }
 
-void ExprVisitor::visit(NotEqual& expr) { }
+void ExprVisitor::visit(NotEqualExpr& expr) { }
 
-void ExprVisitor::visit(Min& expr) { }
+void ExprVisitor::visit(MinExpr& expr) { }
 
-void ExprVisitor::visit(Abs& expr) { }
+void ExprVisitor::visit(AbsExpr& expr) { }
 
-void ExprVisitor::visit(Assignment& expr) { }
+void ExprVisitor::visit(SetExpr& expr) { }
 
-void ExprVisitor::visit(Concatenation& expr) { }
+void ExprVisitor::visit(ConcatExpr& expr) { }
 
-void ExprVisitor::visit(Replacement& expr) { }
+void ExprVisitor::visit(ReplaceExpr& expr) { }
 
-void ExprVisitor::visit(Substring& expr) { }
+void ExprVisitor::visit(SubstrExpr& expr) { }
 
-void ExprVisitor::visit(Lowercase& expr) { }
+void ExprVisitor::visit(LowercaseExpr& expr) { }
 
-void ExprVisitor::visit(Uppercase& expr) { }
+void ExprVisitor::visit(UppercaseExpr& expr) { }
 
-void ExprVisitor::visit(Identifier& expr) { }
+void ExprVisitor::visit(IdentifierExpr& expr) { }
 
 void ExprVisitor::visit(IntLiteral& expr) { }
 
@@ -419,75 +419,75 @@ std::string ExprTypeVisitor::get_type_of_visited_expr() {
     return last_type;
 }
 
-void ExprTypeVisitor::visit(Puts& expr) {
+void ExprTypeVisitor::visit(PutsExpr& expr) {
     last_type = "PutsExpr";
 }
 
-void ExprTypeVisitor::visit(Addition& expr) {
+void ExprTypeVisitor::visit(AdditionExpr& expr) {
     last_type = "AdditionExpr";
 }
 
-void ExprTypeVisitor::visit(Subtraction& expr) {
+void ExprTypeVisitor::visit(SubtractionExpr& expr) {
     last_type = "SubtractionExpr";
 }
 
-void ExprTypeVisitor::visit(Multiplication& expr) {
+void ExprTypeVisitor::visit(MultiplicationExpr& expr) {
     last_type = "MultiplicationExpr";
 }
 
-void ExprTypeVisitor::visit(Division& expr) {
+void ExprTypeVisitor::visit(DivisionExpr& expr) {
     last_type = "DivisionExpr";
 }
 
-void ExprTypeVisitor::visit(GreaterThan& expr) {
+void ExprTypeVisitor::visit(GreaterThanExpr& expr) {
     last_type = "GreaterThanExpr";
 }
 
-void ExprTypeVisitor::visit(LowerThan& expr) {
+void ExprTypeVisitor::visit(LowerThanExpr& expr) {
     last_type = "LowerThanExpr";
 }
 
-void ExprTypeVisitor::visit(Equal& expr) {
+void ExprTypeVisitor::visit(EqualExpr& expr) {
     last_type = "EqualExpr";
 }
 
-void ExprTypeVisitor::visit(NotEqual& expr) {
+void ExprTypeVisitor::visit(NotEqualExpr& expr) {
     last_type = "NotEqualExpr";
 }
 
-void ExprTypeVisitor::visit(Min& expr) {
+void ExprTypeVisitor::visit(MinExpr& expr) {
     last_type = "MinExpr";
 }
 
-void ExprTypeVisitor::visit(Abs& expr) {
+void ExprTypeVisitor::visit(AbsExpr& expr) {
     last_type = "AbsExpr";
 }
 
-void ExprTypeVisitor::visit(Assignment& expr) {
-    last_type = "AssignmentExpr";
+void ExprTypeVisitor::visit(SetExpr& expr) {
+    last_type = "SetExpr";
 }
 
-void ExprTypeVisitor::visit(Concatenation& expr) {
+void ExprTypeVisitor::visit(ConcatExpr& expr) {
     last_type = "ConcatenationExpr";
 }
 
-void ExprTypeVisitor::visit(Replacement& expr) {
+void ExprTypeVisitor::visit(ReplaceExpr& expr) {
     last_type = "ReplacementExpr";
 }
 
-void ExprTypeVisitor::visit(Substring& expr) {
+void ExprTypeVisitor::visit(SubstrExpr& expr) {
     last_type = "SubstringExpr";
 }
 
-void ExprTypeVisitor::visit(Lowercase& expr) {
+void ExprTypeVisitor::visit(LowercaseExpr& expr) {
     last_type = "LowercaseExpr";
 }
 
-void ExprTypeVisitor::visit(Uppercase& expr) {
+void ExprTypeVisitor::visit(UppercaseExpr& expr) {
     last_type = "UppercaseExpr";
 }
 
-void ExprTypeVisitor::visit(Identifier& expr) {
+void ExprTypeVisitor::visit(IdentifierExpr& expr) {
     last_type = "IdentifierExpr";
 }
 

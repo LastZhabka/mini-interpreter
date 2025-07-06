@@ -46,24 +46,25 @@ First(Program') = {\SpaceToken, \EOFToken}
 */
 Parser::Parser() {
     using namespace std;
-    // TERMINALS:
     TokenToSymbolMapper tokens_to_symbol_mapper;
+    TokenCreator token_creator;
     SymbolCreator symbol_creator;
-
-    shared_ptr<Symbol> eof_ = tokens_to_symbol_mapper(make_shared<EOFToken>(0));
-    shared_ptr<Symbol> space_ = tokens_to_symbol_mapper(make_shared<SpaceToken>(0));
-    shared_ptr<Symbol> null_lit_ = tokens_to_symbol_mapper(make_shared<NullLitToken>(0));
-    shared_ptr<Symbol> bool_lit_ = tokens_to_symbol_mapper(make_shared<BoolLitToken>(false, 0));
-    shared_ptr<Symbol> float_lit_ = tokens_to_symbol_mapper(make_shared<FloatLitToken>(0.0, 0));
-    shared_ptr<Symbol> int_lit_ = tokens_to_symbol_mapper(make_shared<IntLitToken>(0, 0));
-    shared_ptr<Symbol> error_ = tokens_to_symbol_mapper(make_shared<ErrorToken>("", 0));
     
-    shared_ptr<Symbol> delimiter_ob_ = symbol_creator(DelimiterToken("(", 0).get_type() + "(()");
-    shared_ptr<Symbol> delimiter_cb_ = symbol_creator(DelimiterToken(")", 0).get_type() + "())");
+    // Terminal Symbols:
+    shared_ptr<Symbol> eof_ = tokens_to_symbol_mapper(token_creator("EOFToken", 0));
+    shared_ptr<Symbol> space_ = tokens_to_symbol_mapper(token_creator("SpaceToken", 0));
+    shared_ptr<Symbol> null_lit_ = tokens_to_symbol_mapper(token_creator("NullLitToken", 0));
+    shared_ptr<Symbol> bool_lit_ = tokens_to_symbol_mapper(token_creator("BoolLitToken", false, 0));
+    shared_ptr<Symbol> float_lit_ = tokens_to_symbol_mapper(token_creator("FloatLitToken", float(0.0), 0));
+    shared_ptr<Symbol> int_lit_ = tokens_to_symbol_mapper(token_creator("IntLitToken", int(0), 0));
+    shared_ptr<Symbol> error_ = tokens_to_symbol_mapper(token_creator("ErrorToken", std::string(""), 0));
     
-    shared_ptr<Symbol> string_lit_ = tokens_to_symbol_mapper(make_shared<StringLitToken>("", 0));
-    shared_ptr<Symbol> identifier_ = tokens_to_symbol_mapper(make_shared<IdentifierToken>("a", 0));
-    shared_ptr<Symbol> keyword_ = tokens_to_symbol_mapper(make_shared<KeywordToken>("", 0));
+    shared_ptr<Symbol> delimiter_ob_ = symbol_creator(token_creator("DelimiterToken", std::string("("), 0)->get_type() + "(()");
+    shared_ptr<Symbol> delimiter_cb_ = symbol_creator(token_creator("DelimiterToken", std::string(")"), 0)->get_type() + "())");
+    
+    shared_ptr<Symbol> string_lit_ = tokens_to_symbol_mapper(token_creator("StringLitToken", std::string(""), 0));
+    shared_ptr<Symbol> identifier_ = tokens_to_symbol_mapper(token_creator("IdentifierToken", std::string("a"), 0));
+    shared_ptr<Symbol> keyword_ = tokens_to_symbol_mapper(token_creator("KeywordToken", std::string(""), 0));
     
     // it can be a bad design decision, but...
     // Problem : The production rule X are stored inside the symbolA,
@@ -169,6 +170,8 @@ Parser::Parser() {
     this->start_symbol = program;
 }
 
+
+
 std::shared_ptr<Expr> build_concrete_syntax_tree(std::vector<std::shared_ptr<Token>>& input, std::shared_ptr<Symbol> start_symbol) {
     using namespace std;
     // Init concrete syntax tree
@@ -190,11 +193,9 @@ std::shared_ptr<Expr> build_concrete_syntax_tree(std::vector<std::shared_ptr<Tok
         cerr << parsing_stack.top().symbol->get_symbol_str() << " " << cur_input_symb->get_symbol_str() << "\n";
 
         if (*(parsing_stack.top().symbol) == *cur_input_symb) {
-            
+            // Inject real data into dummy token
             parsing_stack.top().expr_ancestor->modify(parsing_stack.top().order, TokenToExprMapper()(input[input_pos]));
-            
             parsing_stack.pop();
-            
             input_pos += 1;
             if (input_pos == input.size()) {
                 assert(parsing_stack.size() == 0);
@@ -302,7 +303,7 @@ void Parser::parse(std::vector<std::shared_ptr<Token>> input)  {
         return;
     shared_ptr<Expr> parse_tree_root = build_concrete_syntax_tree(input, this->start_symbol);
     shared_ptr<Expr> ast_root = build_ast(parse_tree_root);
-    std::cerr << number_nodes(ast_root) << "\n";
+    //std::cerr << number_nodes(ast_root) << "\n";
 }
 
 
