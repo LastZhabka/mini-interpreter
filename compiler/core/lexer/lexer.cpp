@@ -54,27 +54,27 @@ std::vector<std::shared_ptr<Token>> Lexer::run(std::string input) {
         }
         else if (longest_match.first == "IntLitToken") {
             std::string value = input.substr(0, longest_match.second);
-            tokens.push_back(token_creator.generate_token(longest_match.first, 1, 0));//TODO
+            tokens.push_back(token_creator(longest_match.first, 1, 0));//TODO
         } 
         else if (longest_match.first == "BoolLitToken") {
             std::string value = input.substr(0, longest_match.second);
-            tokens.push_back(token_creator.generate_token(longest_match.first, bool(value == "true"), 0));//TODO
+            tokens.push_back(token_creator(longest_match.first, bool(value == "true"), 0));//TODO
         }
         else if (longest_match.first == "FloatLitToken") {
             std::string value = input.substr(0, longest_match.second);
-            tokens.push_back(token_creator.generate_token(longest_match.first, float(1.0), 0));//TODO
+            tokens.push_back(token_creator(longest_match.first, float(1.0), 0));//TODO
         } 
         else if(longest_match.first == "SpaceToken" || longest_match.first == "NullLitToken") {
-            tokens.push_back(token_creator.generate_token(longest_match.first, 0));//TODO
+            tokens.push_back(token_creator(longest_match.first, 0));//TODO
         }
         else {
-            tokens.push_back(token_creator.generate_token(longest_match.first, input.substr(0, longest_match.second), 0));
+            tokens.push_back(token_creator(longest_match.first, input.substr(0, longest_match.second), 0));
         }
 
         input = input.substr(longest_match.second, input.size() - longest_match.second);
     }
     
-    tokens.push_back(token_creator.generate_token("EOFToken", 0)); // Add EOF Token at the end
+    tokens.push_back(token_creator("EOFToken", 0)); // Add EOF Token at the end
     
     return tokens;
 }

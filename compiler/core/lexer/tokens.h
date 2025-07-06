@@ -111,11 +111,11 @@ class TokenCreator {
 public:
     TokenCreator();
     
-    std::shared_ptr<Token> generate_token(std::string tokenType, int data, int pos);
-    std::shared_ptr<Token> generate_token(std::string tokenType, float data, int pos);
-    std::shared_ptr<Token> generate_token(std::string tokenType, std::string data, int pos);
-    std::shared_ptr<Token> generate_token(std::string tokenType, bool data, int pos);
-    std::shared_ptr<Token> generate_token(std::string tokenType, int pos);
+    std::shared_ptr<Token> operator()(std::string tokenType, int data, int pos);
+    std::shared_ptr<Token> operator()(std::string tokenType, float data, int pos);
+    std::shared_ptr<Token> operator()(std::string tokenType, std::string data, int pos);
+    std::shared_ptr<Token> operator()(std::string tokenType, bool data, int pos);
+    std::shared_ptr<Token> operator()(std::string tokenType, int pos);
 };
 
 #endif // TOKENS_H

@@ -23,7 +23,7 @@ int Token::get_position() {
 
 TokenCreator::TokenCreator() { }
 
-std::shared_ptr<Token> TokenCreator::generate_token(std::string tokenType, int data, int pos) {
+std::shared_ptr<Token> TokenCreator::operator()(std::string tokenType, int data, int pos) {
     if (tokenType == "IntLitToken") {
         return std::make_shared<IntLitToken>(data, pos);                
     }
@@ -31,7 +31,7 @@ std::shared_ptr<Token> TokenCreator::generate_token(std::string tokenType, int d
     return std::make_shared<ErrorToken>("INTERNAL ERROR: Incorrect Token created", pos);
 }
 
-std::shared_ptr<Token> TokenCreator::generate_token(std::string tokenType, float data, int pos) {
+std::shared_ptr<Token> TokenCreator::operator()(std::string tokenType, float data, int pos) {
     if (tokenType == "FloatLitToken") {
         return std::make_shared<FloatLitToken>(data, pos);                
     }
@@ -39,7 +39,7 @@ std::shared_ptr<Token> TokenCreator::generate_token(std::string tokenType, float
     return std::make_shared<ErrorToken>("INTERNAL ERROR: Incorrect Token created", pos);
 }
 
-std::shared_ptr<Token> TokenCreator::generate_token(std::string tokenType, std::string data, int pos) {
+std::shared_ptr<Token> TokenCreator::operator()(std::string tokenType, std::string data, int pos) {
     if (tokenType == "StringLitToken") {
         return std::make_shared<StringLitToken>(data, pos);                
     }
@@ -59,7 +59,7 @@ std::shared_ptr<Token> TokenCreator::generate_token(std::string tokenType, std::
     return std::make_shared<ErrorToken>("INTERNAL ERROR: Incorrect Token created", pos);
 }
 
-std::shared_ptr<Token> TokenCreator::generate_token(std::string tokenType, bool data, int pos ) {
+std::shared_ptr<Token> TokenCreator::operator()(std::string tokenType, bool data, int pos ) {
     if (tokenType == "BoolLitToken") {
         return std::make_shared<BoolLitToken>(data, pos); 
     }      
@@ -67,7 +67,7 @@ std::shared_ptr<Token> TokenCreator::generate_token(std::string tokenType, bool 
     return std::make_shared<ErrorToken>("INTERNAL ERROR: Incorrect Token created", pos);
 }
 
-std::shared_ptr<Token> TokenCreator::generate_token(std::string tokenType, int pos = 0) {
+std::shared_ptr<Token> TokenCreator::operator()(std::string tokenType, int pos = 0) {
     if (tokenType == "NullLitToken") {
         return std::make_shared<NullLitToken>(pos);
     }
