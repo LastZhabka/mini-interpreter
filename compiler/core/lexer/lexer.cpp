@@ -24,7 +24,7 @@ Lexer::Lexer() {
     std::regex keywords("^((add)|(set)|(puts)|(concat)|(lowercase)"
                     "|(uppercase)|(lowercase)|(replace)"
                     "|(substring)|(subtract)|(multiply)"
-                    "|(divide)|(abs)|(min)|(gt)|(lt)|(equal)|(not_equal))");
+                    "|(divide)|(abs)|(min)|(max)|(gt)|(lt)|(equal)|(not_equal)|(str))");
     lexer_rules.push_back(Rule(keywords, "KeywordToken"));
     
     lexer_rules.push_back(Rule(std::regex("^null"), "NullLitToken"));

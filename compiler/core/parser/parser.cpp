@@ -190,7 +190,7 @@ std::shared_ptr<Expr> build_concrete_syntax_tree(std::vector<std::shared_ptr<Tok
 
     while (parsing_stack.size()) {
 
-        cerr << parsing_stack.top().symbol->get_symbol_str() << " " << cur_input_symb->get_symbol_str() << "\n";
+        //cerr << parsing_stack.top().symbol->get_symbol_str() << " " << cur_input_symb->get_symbol_str() << " " << input_pos << "\n";
 
         if (*(parsing_stack.top().symbol) == *cur_input_symb) {
             // Inject real data into dummy token

@@ -31,6 +31,10 @@ PutsExpr::PutsExpr(std::shared_ptr<Expr> target) {
     this->push_back(target);
 }
 
+ToStrExpr::ToStrExpr(std::shared_ptr<Expr> target) {
+    this->push_back(target);
+}
+
 ErrorExpr::ErrorExpr(std::string value) : value(value) { }
 
 AdditionExpr::AdditionExpr(std::vector<std::shared_ptr<Expr>> operands) {
@@ -74,6 +78,11 @@ NotEqualExpr::NotEqualExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs)
 }
 
 MinExpr::MinExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
+    this->push_back(lhs);
+    this->push_back(rhs);
+}
+
+MaxExpr::MaxExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
     this->push_back(lhs);
     this->push_back(rhs);
 }
@@ -140,6 +149,12 @@ std::shared_ptr<Expr> ExprCreator::operator()(std::string expr_type) {
     if (expr_type == "Keyword(add)") {
         return std::make_shared<AdditionExpr>(std::vector<std::shared_ptr<Expr>>(0));
     }
+    else if (expr_type == "Keyword(puts)") {
+        return std::make_shared<PutsExpr>(nullptr);
+    }
+    else if (expr_type == "Keyword(str)") {
+        return std::make_shared<ToStrExpr>(nullptr);
+    }    
     else if (expr_type == "Keyword(subtract)") {
         return std::make_shared<SubtractionExpr>(nullptr, nullptr);
     }
@@ -163,6 +178,9 @@ std::shared_ptr<Expr> ExprCreator::operator()(std::string expr_type) {
     }
     else if (expr_type == "Keyword(min)") {
         return std::make_shared<MinExpr>(nullptr, nullptr);
+    }
+    else if (expr_type == "Keyword(max)") {
+        return std::make_shared<MaxExpr>(nullptr, nullptr);
     }
     else if (expr_type == "Keyword(abs)") {
         return std::make_shared<AbsExpr>(nullptr);
@@ -244,6 +262,10 @@ void PutsExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
+void ToStrExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
 void AdditionExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
@@ -277,6 +299,10 @@ void NotEqualExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
 }
 
 void MinExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
+    visitor->visit(*this);
+}
+
+void MaxExpr::accept(std::shared_ptr<ExprVisitor> visitor) {
     visitor->visit(*this);
 }
 
@@ -348,6 +374,8 @@ ExprVisitor::~ExprVisitor() = default;
 
 void ExprVisitor::visit(PutsExpr& expr) { }
 
+void ExprVisitor::visit(ToStrExpr& expr) { }
+
 void ExprVisitor::visit(AdditionExpr& expr) { }
 
 void ExprVisitor::visit(SubtractionExpr& expr) { }
@@ -365,6 +393,8 @@ void ExprVisitor::visit(EqualExpr& expr) { }
 void ExprVisitor::visit(NotEqualExpr& expr) { }
 
 void ExprVisitor::visit(MinExpr& expr) { }
+
+void ExprVisitor::visit(MaxExpr& expr) { }
 
 void ExprVisitor::visit(AbsExpr& expr) { }
 
@@ -423,6 +453,10 @@ void ExprTypeVisitor::visit(PutsExpr& expr) {
     last_type = "PutsExpr";
 }
 
+void ExprTypeVisitor::visit(ToStrExpr& expr) {
+    last_type = "ToStrExpr";
+}
+
 void ExprTypeVisitor::visit(AdditionExpr& expr) {
     last_type = "AdditionExpr";
 }
@@ -457,6 +491,10 @@ void ExprTypeVisitor::visit(NotEqualExpr& expr) {
 
 void ExprTypeVisitor::visit(MinExpr& expr) {
     last_type = "MinExpr";
+}
+
+void ExprTypeVisitor::visit(MaxExpr& expr) {
+    last_type = "MaxExpr";
 }
 
 void ExprTypeVisitor::visit(AbsExpr& expr) {

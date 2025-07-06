@@ -120,6 +120,14 @@ class MinExpr : public Expr{
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
+class MaxExpr : public Expr{
+    private:
+    public:
+        MaxExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
+        
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
+};
+
 class AbsExpr : public Expr{
     private:
     public:
@@ -138,6 +146,14 @@ class SetExpr : public Expr{
 };
 
 // String Ops
+class ToStrExpr : public Expr {
+    private:
+    public:
+        ToStrExpr(std::shared_ptr<Expr> target);
+
+        void accept(std::shared_ptr<ExprVisitor> visitor) override;
+};
+
 class ConcatExpr : public Expr{
     private:
     public:
@@ -291,10 +307,14 @@ class ExprVisitor {
 
         virtual void visit(MinExpr& expr);
         
+        virtual void visit(MaxExpr& expr);
+
         virtual void visit(AbsExpr& expr);
 
         virtual void visit(SetExpr& expr);
         
+        virtual void visit(ToStrExpr& expr);
+
         virtual void visit(ConcatExpr& expr);
         
         virtual void visit(ReplaceExpr& expr);
@@ -331,55 +351,59 @@ class ExprTypeVisitor : public ExprVisitor {
 
         std::string get_type_of_visited_expr();
 
-        void visit(PutsExpr& expr);
+        void visit(PutsExpr& expr) override;
 
-        void visit(AdditionExpr& expr);
+        void visit(AdditionExpr& expr) override;
         
-        void visit(SubtractionExpr& expr);
+        void visit(SubtractionExpr& expr) override;
         
-        void visit(MultiplicationExpr& expr);
+        void visit(MultiplicationExpr& expr) override;
         
-        void visit(DivisionExpr& expr);
+        void visit(DivisionExpr& expr) override;
         
-        void visit(GreaterThanExpr& expr);
+        void visit(GreaterThanExpr& expr) override;
         
-        void visit(LowerThanExpr& expr);
+        void visit(LowerThanExpr& expr) override;
         
-        void visit(EqualExpr& expr);
+        void visit(EqualExpr& expr) override;
         
-        void visit(NotEqualExpr& expr);
+        void visit(NotEqualExpr& expr) override;
 
-        void visit(MinExpr& expr);
+        void visit(MinExpr& expr) override;
         
-        void visit(AbsExpr& expr);
+        void visit(MaxExpr& expr) override;
 
-        void visit(SetExpr& expr);
-        
-        void visit(ConcatExpr& expr);
-        
-        void visit(ReplaceExpr& expr);
-        
-        void visit(SubstrExpr& expr);
+        void visit(AbsExpr& expr) override;
 
-        void visit(LowercaseExpr& expr);
+        void visit(SetExpr& expr) override;
+                
+        void visit(ToStrExpr& expr) override;
+
+        void visit(ConcatExpr& expr) override;
         
-        void visit(UppercaseExpr& expr);
-
-        void visit(IdentifierExpr& expr);
+        void visit(ReplaceExpr& expr) override;
         
-        void visit(IntLiteral& expr);
+        void visit(SubstrExpr& expr) override;
 
-        void visit(FloatLiteral& expr);
+        void visit(LowercaseExpr& expr) override;
         
-        void visit(StringLiteral& expr);
+        void visit(UppercaseExpr& expr) override;
 
-        void visit(BoolLiteral& expr);
+        void visit(IdentifierExpr& expr) override;
         
-        void visit(NullLiteral& expr);
+        void visit(IntLiteral& expr) override;
 
-        void visit(ErrorExpr& expr);
+        void visit(FloatLiteral& expr) override;
+        
+        void visit(StringLiteral& expr) override;
 
-        void visit(ParseTempExpr& expr);
+        void visit(BoolLiteral& expr) override;
+        
+        void visit(NullLiteral& expr) override;
+
+        void visit(ErrorExpr& expr) override;
+
+        void visit(ParseTempExpr& expr) override;
 };
 
 
