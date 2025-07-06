@@ -28,14 +28,13 @@ Lexer::Lexer() {
     lexer_rules.push_back(Rule(keywords, "KeywordToken"));
     
     lexer_rules.push_back(Rule(std::regex("^null"), "NullLitToken"));
-    lexer_rules.push_back(Rule(std::regex("^(0)|(-?[1-9][0-9]*)"), "IntLitToken"));
-    lexer_rules.push_back(Rule(std::regex("^(0)|(-?[1-9][0-9]*)\\.([0-9]*)"), "FloatLitToken"));
-    lexer_rules.push_back(Rule(std::regex("^\"(\\w)*\""), "StringLitToken"));
-    lexer_rules.push_back(Rule(std::regex("^(false)|(true)"), "BoolLitToken"));
+    lexer_rules.push_back(Rule(std::regex("^((0)|(-?[1-9][0-9]*))"), "IntLitToken"));
+    lexer_rules.push_back(Rule(std::regex("^((0)|(-?[1-9][0-9]*)\\.([0-9]*))"), "FloatLitToken"));
+    lexer_rules.push_back(Rule(std::regex("^(\"([^\"])*\")"), "StringLitToken"));
+    lexer_rules.push_back(Rule(std::regex("^((false)|(true))"), "BoolLitToken"));
     
-    lexer_rules.push_back(Rule(std::regex("^[a-z]([a-z]|[A-Z])*"), "IdentifierToken"));
-    lexer_rules.push_back(Rule(std::regex("^ "), "SpaceToken"));
-    lexer_rules.push_back(Rule(std::regex("^\n"), "SpaceToken"));                    
+    lexer_rules.push_back(Rule(std::regex("^([a-z]([a-z]|[A-Z])*)"), "IdentifierToken"));
+    lexer_rules.push_back(Rule(std::regex("^\\s"), "SpaceToken"));                
 }
 
 std::vector<std::shared_ptr<Token>> Lexer::run(std::string input) {
@@ -70,7 +69,6 @@ std::vector<std::shared_ptr<Token>> Lexer::run(std::string input) {
         else {
             tokens.push_back(token_creator(longest_match.first, input.substr(0, longest_match.second), 0));
         }
-
         input = input.substr(longest_match.second, input.size() - longest_match.second);
     }
     
