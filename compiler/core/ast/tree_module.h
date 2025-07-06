@@ -323,6 +323,66 @@ class ExprVisitor {
         virtual void visit(ParseTempExpr& expr);
 };
 
+class ExprTypeVisitor : public ExprVisitor {
+    private:
+        std::string last_type;
+    public:
+        
+        void clear();
+
+        std::string get_type_of_visited_expr();
+
+        void visit(Puts& expr);
+
+        void visit(Addition& expr);
+        
+        void visit(Subtraction& expr);
+        
+        void visit(Multiplication& expr);
+        
+        void visit(Division& expr);
+        
+        void visit(GreaterThan& expr);
+        
+        void visit(LowerThan& expr);
+        
+        void visit(Equal& expr);
+        
+        void visit(NotEqual& expr);
+
+        void visit(Min& expr);
+        
+        void visit(Abs& expr);
+
+        void visit(Assignment& expr);
+        
+        void visit(Concatenation& expr);
+        
+        void visit(Replacement& expr);
+        
+        void visit(Substring& expr);
+
+        void visit(Lowercase& expr);
+        
+        void visit(Uppercase& expr);
+
+        void visit(Identifier& expr);
+        
+        void visit(IntLiteral& expr);
+
+        void visit(FloatLiteral& expr);
+        
+        void visit(StringLiteral& expr);
+
+        void visit(BoolLiteral& expr);
+        
+        void visit(NullLiteral& expr);
+
+        void visit(ErrorExpr& expr);
+
+        void visit(ParseTempExpr& expr);
+};
+
 
 class ParserTempTypeVisitor : public ExprVisitor {
     private:

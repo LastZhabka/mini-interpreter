@@ -396,6 +396,7 @@ void ExprVisitor::visit(ErrorExpr& expr) { }
 
 void ExprVisitor::visit(ParseTempExpr& expr) { }
 
+//ParserTempTypeVisitor:
 
 void ParserTempTypeVisitor::visit(ParseTempExpr& expr) {
     last_type = "(" + expr.get_parse_type() + ")";
@@ -406,4 +407,114 @@ void ParserTempTypeVisitor::clear() {
 
 std::string ParserTempTypeVisitor::get_type_of_visited_expr() {
     return last_type;
+}
+
+//ExprTypeVisitor:
+
+void ExprTypeVisitor::clear() {
+    last_type = "";
+}
+
+std::string ExprTypeVisitor::get_type_of_visited_expr() {
+    return last_type;
+}
+
+void ExprTypeVisitor::visit(Puts& expr) {
+    last_type = "PutsExpr";
+}
+
+void ExprTypeVisitor::visit(Addition& expr) {
+    last_type = "AdditionExpr";
+}
+
+void ExprTypeVisitor::visit(Subtraction& expr) {
+    last_type = "SubtractionExpr";
+}
+
+void ExprTypeVisitor::visit(Multiplication& expr) {
+    last_type = "MultiplicationExpr";
+}
+
+void ExprTypeVisitor::visit(Division& expr) {
+    last_type = "DivisionExpr";
+}
+
+void ExprTypeVisitor::visit(GreaterThan& expr) {
+    last_type = "GreaterThanExpr";
+}
+
+void ExprTypeVisitor::visit(LowerThan& expr) {
+    last_type = "LowerThanExpr";
+}
+
+void ExprTypeVisitor::visit(Equal& expr) {
+    last_type = "EqualExpr";
+}
+
+void ExprTypeVisitor::visit(NotEqual& expr) {
+    last_type = "NotEqualExpr";
+}
+
+void ExprTypeVisitor::visit(Min& expr) {
+    last_type = "MinExpr";
+}
+
+void ExprTypeVisitor::visit(Abs& expr) {
+    last_type = "AbsExpr";
+}
+
+void ExprTypeVisitor::visit(Assignment& expr) {
+    last_type = "AssignmentExpr";
+}
+
+void ExprTypeVisitor::visit(Concatenation& expr) {
+    last_type = "ConcatenationExpr";
+}
+
+void ExprTypeVisitor::visit(Replacement& expr) {
+    last_type = "ReplacementExpr";
+}
+
+void ExprTypeVisitor::visit(Substring& expr) {
+    last_type = "SubstringExpr";
+}
+
+void ExprTypeVisitor::visit(Lowercase& expr) {
+    last_type = "LowercaseExpr";
+}
+
+void ExprTypeVisitor::visit(Uppercase& expr) {
+    last_type = "UppercaseExpr";
+}
+
+void ExprTypeVisitor::visit(Identifier& expr) {
+    last_type = "IdentifierExpr";
+}
+
+void ExprTypeVisitor::visit(IntLiteral& expr) {
+    last_type = "IntLiteralExpr";
+}
+
+void ExprTypeVisitor::visit(FloatLiteral& expr) {
+    last_type = "FloatLiteralExpr";
+}
+
+void ExprTypeVisitor::visit(StringLiteral& expr) {
+    last_type = "StringLiteralExpr";
+}
+
+void ExprTypeVisitor::visit(BoolLiteral& expr) {
+    last_type = "BoolLiteralExpr";
+}
+
+void ExprTypeVisitor::visit(NullLiteral& expr) {
+    last_type = "NullLiteralExpr";
+}
+
+void ExprTypeVisitor::visit(ErrorExpr& expr) {
+    last_type = "ErrorExpr";
+}
+
+void ExprTypeVisitor::visit(ParseTempExpr& expr) {
+    last_type = "ParseTempExpr";
 }
