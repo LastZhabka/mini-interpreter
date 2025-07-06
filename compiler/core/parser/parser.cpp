@@ -169,18 +169,10 @@ Parser::Parser() {
     this->start_symbol = program;
 }
 
-
-
-
-void Parser::parse(std::vector<std::shared_ptr<Token>> input)  {
+std::shared_ptr<Expr> build_concrete_syntax_tree(std::vector<std::shared_ptr<Token>>& input, std::shared_ptr<Symbol> start_symbol) {
     using namespace std;
-    
-    
-    if (input.size() == 0)
-        return;
-
     // Init concrete syntax tree
-    shared_ptr<Expr> parse_tree_root = ExprCreator()("ParseTempExpr");
+    shared_ptr<Expr> parse_tree_root = SymbolToExprMapper()(start_symbol);
 
 
     // Init parsing stack
@@ -216,15 +208,101 @@ void Parser::parse(std::vector<std::shared_ptr<Token>> input)  {
             reverse(decomposed_form.begin(), decomposed_form.end());
             parsing_stack.pop();
 
+            vector<shared_ptr<Expr>> cur_expr_children;
+
             for(int ind = 0; ind < decomposed_form.size(); ind++) {
                 parsing_stack.push(
-                    ParsingStackElement{decomposed_form[ind], SymbolToExprMapper()(decomposed_form[ind]), cur_expr, ind}
+                    ParsingStackElement{decomposed_form[ind], SymbolToExprMapper()(decomposed_form[ind]), cur_expr, (int)(decomposed_form.size()) - ind - 1}
                 );
-                cur_expr->push_back(parsing_stack.top().expr);
+                cur_expr_children.push_back(parsing_stack.top().expr);
             }
+            reverse(cur_expr_children.begin(), cur_expr_children.end());
+            cur_expr->reassign_children(cur_expr_children);
         }
     }
+    return parse_tree_root;
+}
 
+std::shared_ptr<Expr> build_ast(std::shared_ptr<Expr> expr) {
+    using namespace std;
+
+    shared_ptr<ExprTypeVisitor> type_visitor = make_shared<ExprTypeVisitor>();
+    type_visitor->clear();
+    expr->accept(type_visitor);
+    if(type_visitor->get_type_of_visited_expr() != "ParseTempExpr")
+        return expr;
+
+
+    vector<shared_ptr<Expr>> children_exprs = expr->get_kids();
+    vector<shared_ptr<Expr>> new_children_exprs;
+
+    shared_ptr<ParserTempTypeVisitor> visitor = make_shared<ParserTempTypeVisitor>();
+    
+    visitor->clear();
+    expr->accept(visitor);
+    std::string expr_type = visitor->get_type_of_visited_expr();
+
+    for(auto child_expr : children_exprs) {
+        shared_ptr<Expr> child_ast = build_ast(child_expr);
+        if (child_ast != nullptr) {
+            new_children_exprs.push_back(child_ast);
+        }
+    }
+    
+    if (expr_type == "(Program)" || expr_type == "(Params)") {
+        assert(children_exprs.size() == 2);
+        if (new_children_exprs.size() == 2) {
+            vector<shared_ptr<Expr>> target = new_children_exprs[1]->get_kids();
+            new_children_exprs.pop_back();
+            for (auto u : target) {
+                new_children_exprs.push_back(u);
+            }
+        }
+        expr->reassign_children(new_children_exprs);
+        return expr;
+    }
+    else if (expr_type == "(Program')" || expr_type == "(Params')" || expr_type == "(Literal)") {
+        if(new_children_exprs.size() == 0)
+            return nullptr;
+        assert(new_children_exprs.size() == 1);
+        return new_children_exprs[0];
+    }
+    else if (expr_type == "(Expr)") {
+        if(children_exprs.size() == 1) {
+            return children_exprs[0];
+        }
+        assert(new_children_exprs.size() == 2);
+        new_children_exprs[0]->reassign_children(new_children_exprs[1]->get_kids());
+        return new_children_exprs[0];
+    }
+    else if (expr_type == "()") {
+        if (new_children_exprs.size() == 0)
+            return nullptr;
+        expr->reassign_children(new_children_exprs);
+        return expr;
+    }
+
+    return expr;
+}
+
+int number_nodes(std::shared_ptr<Expr> v) {
+    if (v == nullptr) return 0;
+    int answ = 1;
+    for(auto u : v->get_kids()) {
+        answ += number_nodes(u);
+    }
+    return answ;
+}
+
+void Parser::parse(std::vector<std::shared_ptr<Token>> input)  {
+    using namespace std;
+    
+    
+    if (input.size() == 0)
+        return;
+    shared_ptr<Expr> parse_tree_root = build_concrete_syntax_tree(input, this->start_symbol);
+    shared_ptr<Expr> ast_root = build_ast(parse_tree_root);
+    std::cerr << number_nodes(ast_root) << "\n";
 }
 
 

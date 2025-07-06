@@ -29,14 +29,4 @@ struct ParsingStackElement {
 };
 
 
-
-// class ParseTable {
-//   //TODO  
-// };
-
-// class Parser {
-//     ParseTable x;
-// };
-
-
 #endif // PARSER_H
