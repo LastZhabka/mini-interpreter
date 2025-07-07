@@ -86,9 +86,7 @@ std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<KeywordToken
 }
 
 std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<IdentifierToken> token) {
-    std::shared_ptr<Expr> expr = ExprCreator()("Identifier");
-    expr->push_back(std::make_shared<StringLiteral>(token->get_value()));
-    return expr;
+    return std::make_shared<IdentifierExpr>(token->get_value());
 }
 
 std::shared_ptr<Expr> TokenToExprMapper::operator()(std::shared_ptr<StringLitToken> token){

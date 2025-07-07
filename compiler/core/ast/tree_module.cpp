@@ -24,6 +24,21 @@ void Expr::reassign_children(std::vector<std::shared_ptr<Expr>> target_) {
     target = target_;
 }
 
+
+void Expr::visualize(int tabs) {
+    std::shared_ptr<ToStringVisitor> to_string_visitor = std::make_shared<ToStringVisitor>();
+    this->accept(to_string_visitor);
+    std::string result;
+    for(int j = 0; j < tabs; j++)
+        result += "|    ";
+    result += to_string_visitor->get_result_of_visited_expr();
+    std::cout << result << "\n";
+    for(auto kid : this->get_kids()) {
+        kid->visualize(tabs + 1);
+    }
+}
+
+
 // CONSTRUCTORS
 
 
@@ -36,6 +51,10 @@ ToStrExpr::ToStrExpr(std::shared_ptr<Expr> target) {
 }
 
 ErrorExpr::ErrorExpr(std::string value) : value(value) { }
+
+std::string ErrorExpr::get_value() {
+    return value;
+}
 
 AdditionExpr::AdditionExpr(std::vector<std::shared_ptr<Expr>> operands) {
     for (auto operand : operands)
@@ -121,17 +140,35 @@ UppercaseExpr::UppercaseExpr(std::shared_ptr<Expr> target) {
     this->push_back(target);
 }
 
-IdentifierExpr::IdentifierExpr(std::shared_ptr<Expr> target) {
-    this->push_back(target);
+IdentifierExpr::IdentifierExpr(std::string name) : name(name) { }
+
+std::string IdentifierExpr::get_name() {
+    return name;
 }
 
 IntLiteral::IntLiteral(int value) : value(value) { }
 
+int IntLiteral::get_value() {
+    return value;
+}
+
 FloatLiteral::FloatLiteral(float value) : value(value) { }
+
+float FloatLiteral::get_value() {
+    return value;
+}
 
 StringLiteral::StringLiteral(std::string value) : value(value) { }
 
+std::string StringLiteral::get_value() {
+    return value;
+}
+
 BoolLiteral::BoolLiteral(bool value) : value(value) { }
+
+bool BoolLiteral::get_value() {
+    return value;
+}
 
 NullLiteral::NullLiteral() { }
 
@@ -204,7 +241,7 @@ std::shared_ptr<Expr> ExprCreator::operator()(std::string expr_type) {
         return std::make_shared<UppercaseExpr>(nullptr);
     }
     else if (expr_type == "Identifier") {
-        return std::make_shared<IdentifierExpr>(nullptr); //??????????
+        return std::make_shared<IdentifierExpr>(""); 
     }
     else if (expr_type == "IntLit") {
         return std::make_shared<IntLiteral>(0);
@@ -555,4 +592,122 @@ void ExprTypeVisitor::visit(ErrorExpr& expr) {
 
 void ExprTypeVisitor::visit(ParseTempExpr& expr) {
     last_type = "ParseTempExpr";
+}
+
+//ToStringVisitor:
+
+void ToStringVisitor::clear() {
+    last_result = "";
+}
+
+std::string ToStringVisitor::get_result_of_visited_expr() {
+    return last_result;
+}
+
+void ToStringVisitor::visit(PutsExpr& expr) {
+    last_result = "PutsExpr";
+}
+
+void ToStringVisitor::visit(ToStrExpr& expr) {
+    last_result = "ToStrExpr";
+}
+
+void ToStringVisitor::visit(AdditionExpr& expr) {
+    last_result = "AdditionExpr";
+}
+
+void ToStringVisitor::visit(SubtractionExpr& expr) {
+    last_result = "SubtractionExpr";
+}
+
+void ToStringVisitor::visit(MultiplicationExpr& expr) {
+    last_result = "MultiplicationExpr";
+}
+
+void ToStringVisitor::visit(DivisionExpr& expr) {
+    last_result = "DivisionExpr";
+}
+
+void ToStringVisitor::visit(GreaterThanExpr& expr) {
+    last_result = "GreaterThanExpr";
+}
+
+void ToStringVisitor::visit(LowerThanExpr& expr) {
+    last_result = "LowerThanExpr";
+}
+
+void ToStringVisitor::visit(EqualExpr& expr) {
+    last_result = "EqualExpr";
+}
+
+void ToStringVisitor::visit(NotEqualExpr& expr) {
+    last_result = "NotEqualExpr";
+}
+
+void ToStringVisitor::visit(MinExpr& expr) {
+    last_result = "MinExpr";
+}
+
+void ToStringVisitor::visit(MaxExpr& expr) {
+    last_result = "MaxExpr";
+}
+
+void ToStringVisitor::visit(AbsExpr& expr) {
+    last_result = "AbsExpr";
+}
+
+void ToStringVisitor::visit(SetExpr& expr) {
+    last_result = "SetExpr";
+}
+
+void ToStringVisitor::visit(ConcatExpr& expr) {
+    last_result = "ConcatenationExpr";
+}
+
+void ToStringVisitor::visit(ReplaceExpr& expr) {
+    last_result = "ReplacementExpr";
+}
+
+void ToStringVisitor::visit(SubstrExpr& expr) {
+    last_result = "SubstringExpr";
+}
+
+void ToStringVisitor::visit(LowercaseExpr& expr) {
+    last_result = "LowercaseExpr";
+}
+
+void ToStringVisitor::visit(UppercaseExpr& expr) {
+    last_result = "UppercaseExpr";
+}
+
+void ToStringVisitor::visit(IdentifierExpr& expr) {
+    last_result = "IdentifierExpr(" + (expr.get_name()) + ")";
+}
+
+void ToStringVisitor::visit(IntLiteral& expr) {
+    last_result = "IntLiteralExpr(" + std::to_string(expr.get_value()) + ")";
+}
+
+void ToStringVisitor::visit(FloatLiteral& expr) {
+    last_result = "FloatLiteralExpr(" + std::to_string(expr.get_value()) + ")";
+}
+
+void ToStringVisitor::visit(StringLiteral& expr) {
+    last_result = "StringLiteralExpr(" + (expr.get_value()) + ")";
+}
+
+void ToStringVisitor::visit(BoolLiteral& expr) {
+    last_result = "BoolLiteralExpr(" + std::to_string(expr.get_value()) + ")";
+}
+
+void ToStringVisitor::visit(NullLiteral& expr) {
+    last_result = "NullLiteralExpr(null)";
+}
+
+void ToStringVisitor::visit(ErrorExpr& expr) {
+    last_result = "ErrorExpr(" + (expr.get_value()) + ")";
+}
+
+void ToStringVisitor::visit(ParseTempExpr& expr) {
+    last_result = "ParseTempExpr(" + expr.get_parse_type() + ")";
 }

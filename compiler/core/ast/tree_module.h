@@ -35,6 +35,7 @@ class Expr {
 
         void push_back(std::shared_ptr<Expr> elem);
 
+        void visualize(int tabs);
 };  
 
 
@@ -197,8 +198,11 @@ class UppercaseExpr : public Expr{
 // Identifier
 class IdentifierExpr : public Expr {
     private:
+        std::string name;
     public:
-        IdentifierExpr(std::shared_ptr<Expr> name);
+        IdentifierExpr(std::string name);
+
+        std::string get_name();
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
@@ -209,6 +213,8 @@ class IntLiteral : public Expr {
         int value;
     public:
         IntLiteral(int value);
+
+        int get_value();
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
@@ -218,6 +224,8 @@ class FloatLiteral : public Expr {
         float value;
     public:
         FloatLiteral(float value);
+
+        float get_value();
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
@@ -227,6 +235,8 @@ class StringLiteral : public Expr {
         std::string value;
     public:
         StringLiteral(std::string value);
+
+        std::string get_value();
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
@@ -236,6 +246,8 @@ class BoolLiteral : public Expr {
         bool value;
     public:
         BoolLiteral(bool value);
+
+        bool get_value();
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
@@ -253,7 +265,9 @@ class ErrorExpr : public Expr {
         std::string value;
     public:
         ErrorExpr(std::string value);
-        
+
+        std::string get_value();        
+
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
 
@@ -415,6 +429,71 @@ class ParserTempTypeVisitor : public ExprVisitor {
         void clear();
 
         std::string get_type_of_visited_expr();
+
+        void visit(ParseTempExpr& expr) override;
+};
+
+
+class ToStringVisitor : public ExprVisitor {
+    private:
+        std::string last_result;
+    public:
+        
+        void clear();
+
+        std::string get_result_of_visited_expr();
+
+        void visit(PutsExpr& expr) override;
+
+        void visit(AdditionExpr& expr) override;
+        
+        void visit(SubtractionExpr& expr) override;
+        
+        void visit(MultiplicationExpr& expr) override;
+        
+        void visit(DivisionExpr& expr) override;
+        
+        void visit(GreaterThanExpr& expr) override;
+        
+        void visit(LowerThanExpr& expr) override;
+        
+        void visit(EqualExpr& expr) override;
+        
+        void visit(NotEqualExpr& expr) override;
+
+        void visit(MinExpr& expr) override;
+        
+        void visit(MaxExpr& expr) override;
+
+        void visit(AbsExpr& expr) override;
+
+        void visit(SetExpr& expr) override;
+                
+        void visit(ToStrExpr& expr) override;
+
+        void visit(ConcatExpr& expr) override;
+        
+        void visit(ReplaceExpr& expr) override;
+        
+        void visit(SubstrExpr& expr) override;
+
+        void visit(LowercaseExpr& expr) override;
+        
+        void visit(UppercaseExpr& expr) override;
+
+        void visit(IdentifierExpr& expr) override;
+        
+        void visit(IntLiteral& expr) override;
+
+        void visit(FloatLiteral& expr) override;
+        
+        void visit(StringLiteral& expr) override;
+
+        void visit(BoolLiteral& expr) override;
+        
+        void visit(NullLiteral& expr) override;
+
+        void visit(ErrorExpr& expr) override;
 
         void visit(ParseTempExpr& expr) override;
 };
