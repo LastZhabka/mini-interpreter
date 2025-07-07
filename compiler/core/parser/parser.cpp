@@ -269,8 +269,8 @@ std::shared_ptr<Expr> build_ast(std::shared_ptr<Expr> expr) {
         return new_children_exprs[0];
     }
     else if (expr_type == "(Expr)") {
-        if(children_exprs.size() == 1) {
-            return children_exprs[0];
+        if(new_children_exprs.size() == 1) {
+            return new_children_exprs[0];
         }
         assert(new_children_exprs.size() == 2);
         new_children_exprs[0]->reassign_children(new_children_exprs[1]->get_kids());
