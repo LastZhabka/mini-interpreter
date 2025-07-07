@@ -27,7 +27,7 @@ Lexer::Lexer() {
                     "|(divide)|(abs)|(min)|(max)|(gt)|(lt)|(equal)|(not_equal)|(str))");
     lexer_rules.push_back(Rule(keywords, "KeywordToken"));
     
-    lexer_rules.push_back(Rule(std::regex("^null"), "NullLitToken"));
+    lexer_rules.push_back(Rule(std::regex("^(null)"), "NullLitToken"));
     lexer_rules.push_back(Rule(std::regex("^((0)|(-?[1-9][0-9]*))"), "IntLitToken"));
     lexer_rules.push_back(Rule(std::regex("^((0)|(-?[1-9][0-9]*)\\.([0-9]*))"), "FloatLitToken"));
     lexer_rules.push_back(Rule(std::regex("^(\"([^\"])*\")"), "StringLitToken"));
@@ -62,8 +62,11 @@ std::vector<std::shared_ptr<Token>> Lexer::run(std::string input) {
         else if (longest_match.first == "FloatLitToken") {
             std::string value = input.substr(0, longest_match.second);
             tokens.push_back(token_creator(longest_match.first, float(1.0), 0));//TODO
-        } 
-        else if(longest_match.first == "SpaceToken" || longest_match.first == "NullLitToken") {
+        }
+        else if (longest_match.first == "NullLitToken") {
+            tokens.push_back(token_creator(longest_match.first, 0)); //TODO
+        }        
+        else if(longest_match.first == "SpaceToken") {
             if(tokens.size() && tokens.back()->get_type() != "SpaceToken") {
                 tokens.push_back(token_creator(longest_match.first, 0)); //TODO
             }
