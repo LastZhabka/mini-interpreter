@@ -295,15 +295,15 @@ int number_nodes(std::shared_ptr<Expr> v) {
     return answ;
 }
 
-void Parser::parse(std::vector<std::shared_ptr<Token>> input)  {
+std::shared_ptr<Expr> Parser::parse(std::vector<std::shared_ptr<Token>> input)  {
     using namespace std;
     
     
     if (input.size() == 0)
-        return;
+        return nullptr;
     shared_ptr<Expr> parse_tree_root = build_concrete_syntax_tree(input, this->start_symbol);
     shared_ptr<Expr> ast_root = build_ast(parse_tree_root);
-    //std::cerr << number_nodes(ast_root) << "\n";
+    return ast_root;
 }
 
 

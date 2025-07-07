@@ -17,7 +17,7 @@ class Parser {
     public:
         Parser();
 
-        void parse(std::vector<std::shared_ptr<Token>> input);
+        std::shared_ptr<Expr> parse(std::vector<std::shared_ptr<Token>> input);
 };
 
 struct ParsingStackElement {
