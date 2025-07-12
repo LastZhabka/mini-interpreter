@@ -190,7 +190,7 @@ std::shared_ptr<Expr> build_concrete_syntax_tree(std::vector<std::shared_ptr<Tok
 
     while (parsing_stack.size()) {
 
-        //cerr << parsing_stack.top().symbol->get_symbol_str() << " " << cur_input_symb->get_symbol_str() << " " << input_pos << "\n";
+        // cerr << parsing_stack.top().symbol->get_symbol_str() << " " << cur_input_symb->get_symbol_str() << " " << input_pos << "\n";
 
         if (*(parsing_stack.top().symbol) == *cur_input_symb) {
             // Inject real data into dummy token
@@ -228,9 +228,7 @@ std::shared_ptr<Expr> build_ast(std::shared_ptr<Expr> expr) {
     using namespace std;
 
     shared_ptr<ExprTypeVisitor> type_visitor = make_shared<ExprTypeVisitor>();
-    type_visitor->clear();
-    expr->accept(type_visitor);
-    if(type_visitor->get_type_of_visited_expr() != "ParseTempExpr")
+    if(type_visitor->get_type(expr, type_visitor) != "ParseTempExpr")
         return expr;
 
 
@@ -238,10 +236,8 @@ std::shared_ptr<Expr> build_ast(std::shared_ptr<Expr> expr) {
     vector<shared_ptr<Expr>> new_children_exprs;
 
     shared_ptr<ParserTempTypeVisitor> visitor = make_shared<ParserTempTypeVisitor>();
-    
-    visitor->clear();
-    expr->accept(visitor);
-    std::string expr_type = visitor->get_type_of_visited_expr();
+
+    std::string expr_type = visitor->get_parser_type(expr, visitor);
 
     for(auto child_expr : children_exprs) {
         shared_ptr<Expr> child_ast = build_ast(child_expr);

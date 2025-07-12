@@ -31,7 +31,7 @@ void Expr::visualize(int tabs) {
     std::string result;
     for(int j = 0; j < tabs; j++)
         result += "|    ";
-    result += to_string_visitor->get_result_of_visited_expr();
+    result += to_string_visitor->get_to_string(this, to_string_visitor);
     std::cout << result << "\n";
     for(auto kid : this->get_kids()) {
         kid->visualize(tabs + 1);
@@ -468,22 +468,20 @@ void ExprVisitor::visit(ParseTempExpr& expr) { }
 void ParserTempTypeVisitor::visit(ParseTempExpr& expr) {
     last_type = "(" + expr.get_parse_type() + ")";
 }
-void ParserTempTypeVisitor::clear() {
+
+std::string ParserTempTypeVisitor::get_parser_type(std::shared_ptr<Expr> expr, std::shared_ptr<ExprVisitor> visitor) {
+    expr->accept(visitor);
+    std::string answ = last_type;
     last_type = "";
+    return answ;
 }
-
-std::string ParserTempTypeVisitor::get_type_of_visited_expr() {
-    return last_type;
-}
-
 //ExprTypeVisitor:
 
-void ExprTypeVisitor::clear() {
+std::string ExprTypeVisitor::get_type(std::shared_ptr<Expr> expr, std::shared_ptr<ExprVisitor> visitor) {
+    expr->accept(visitor);
+    std::string answ = last_type;
     last_type = "";
-}
-
-std::string ExprTypeVisitor::get_type_of_visited_expr() {
-    return last_type;
+    return answ;
 }
 
 void ExprTypeVisitor::visit(PutsExpr& expr) {
@@ -596,12 +594,19 @@ void ExprTypeVisitor::visit(ParseTempExpr& expr) {
 
 //ToStringVisitor:
 
-void ToStringVisitor::clear() {
+
+std::string ToStringVisitor::get_to_string(Expr* expr, std::shared_ptr<ExprVisitor> visitor) {
+    expr->accept(visitor);
+    std::string answ = last_result;
     last_result = "";
+    return answ;
 }
 
-std::string ToStringVisitor::get_result_of_visited_expr() {
-    return last_result;
+std::string ToStringVisitor::get_to_string(std::shared_ptr<Expr> expr, std::shared_ptr<ExprVisitor> visitor) {
+    expr->accept(visitor);
+    std::string answ = last_result;
+    last_result = "";
+    return answ;
 }
 
 void ToStringVisitor::visit(PutsExpr& expr) {

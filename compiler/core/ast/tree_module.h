@@ -5,15 +5,6 @@
 #include <memory>
 #include <vector>
 
-enum class Type {
-    int_type,
-    string_type,
-    null_type,
-    bool_type,
-    float_type,
-    unresolved
-};
-
 
 class ExprVisitor;
 
@@ -361,9 +352,7 @@ class ExprTypeVisitor : public ExprVisitor {
         std::string last_type;
     public:
         
-        void clear();
-
-        std::string get_type_of_visited_expr();
+        std::string get_type(std::shared_ptr<Expr> expr, std::shared_ptr<ExprVisitor> visitor);
 
         void visit(PutsExpr& expr) override;
 
@@ -425,10 +414,8 @@ class ParserTempTypeVisitor : public ExprVisitor {
     private:
         std::string last_type;
     public:
-        
-        void clear();
 
-        std::string get_type_of_visited_expr();
+        std::string get_parser_type(std::shared_ptr<Expr> expr, std::shared_ptr<ExprVisitor> visitor);
 
         void visit(ParseTempExpr& expr) override;
 };
@@ -438,10 +425,10 @@ class ToStringVisitor : public ExprVisitor {
     private:
         std::string last_result;
     public:
-        
-        void clear();
 
-        std::string get_result_of_visited_expr();
+        std::string get_to_string(Expr* expr, std::shared_ptr<ExprVisitor> visitor);
+
+        std::string get_to_string(std::shared_ptr<Expr> expr, std::shared_ptr<ExprVisitor> visitor);
 
         void visit(PutsExpr& expr) override;
 
