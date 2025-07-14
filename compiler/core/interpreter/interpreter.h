@@ -14,7 +14,8 @@ enum class Type {
     string_type,
     null_type,
     bool_type,
-    float_type
+    float_type,
+    error_type
 };
 
 using ValueType = std::variant<int, double, std::string, bool>;
@@ -33,15 +34,17 @@ class ReturnValue {
 
         ReturnValue(std::string val);
 
-        ReturnValue(int val);
+        ReturnValue(bool val);
 
-        int asInt() const;
+        int as_int() const;
 
-        double asDouble() const;
+        float as_float() const;
         
-        const std::string asString() const;
+        std::string as_string() const;
         
-        bool asBool() const;
+        bool as_bool() const;
+
+        Type get_type();
 };
 
 class SymbolTable {
@@ -52,6 +55,8 @@ class SymbolTable {
         void add(std::string var_name, std::shared_ptr<ReturnValue> value);
 
         std::shared_ptr<ReturnValue> get(std::string var_name);
+
+        Type get_type(std::string var_name);
 };
 
 class Context {
@@ -60,11 +65,11 @@ class Context {
     public:
         Context();
 
-        void insert_var(std::string var_name, std::shared_ptr<Expr> value);
+        void insert_var(std::string var_name, std::shared_ptr<ReturnValue> value);
 
         Type get_type(std::string var_name);
 
-        ReturnValue get_val(std::string var_name);
+        std::shared_ptr<ReturnValue> get_val(std::string var_name);
 };
 
 class Printer {
@@ -73,7 +78,9 @@ class Printer {
     public:
         void add_output(std::string text);
 
-        void clear_buffer()
+        void clear_buffer();
+
+        std::string to_string();
 };
 
 class Interpreter { // static (?)
@@ -93,4 +100,4 @@ class Interpreter { // static (?)
         std::string interpret(std::string input);
 };
 
-#endif //INTERPRETER_Hs
+#endif //INTERPRETER_H
