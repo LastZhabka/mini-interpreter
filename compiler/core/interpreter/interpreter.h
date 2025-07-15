@@ -91,7 +91,7 @@ class Interpreter { // static (?)
     public:
         Interpreter();
 
-        ReturnValue evaluate(
+        std::shared_ptr<ReturnValue> evaluate(
             std::shared_ptr<Expr> expr_eval, 
             std::shared_ptr<Context> context, 
             std::shared_ptr<Printer> printer
