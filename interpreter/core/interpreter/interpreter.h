@@ -18,7 +18,7 @@ enum class Type {
     error_type
 };
 
-using ValueType = std::variant<int, double, std::string, bool>;
+using ValueType = std::variant<int, float, std::string, bool>;
 
 
 class ReturnValue {
@@ -43,6 +43,10 @@ class ReturnValue {
         std::string as_string() const;
         
         bool as_bool() const;
+
+        float as_numerical() const;
+
+        bool is_numerical() const;
 
         Type get_type();
 };
