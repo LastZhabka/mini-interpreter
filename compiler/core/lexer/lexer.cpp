@@ -65,6 +65,9 @@ std::vector<std::shared_ptr<Token>> Lexer::run(std::string input) {
         }
         else if (longest_match.first == "NullLitToken") {
             tokens.push_back(token_creator(longest_match.first, 0)); //TODO
+        }
+        else if (longest_match.first == "StringLitToken") {
+            tokens.push_back(token_creator(longest_match.first, input.substr(1, longest_match.second - 2), 0)); // TODO    
         }        
         else if(longest_match.first == "SpaceToken") {
             if(tokens.size() && tokens.back()->get_type() != "SpaceToken") {
@@ -72,7 +75,7 @@ std::vector<std::shared_ptr<Token>> Lexer::run(std::string input) {
             }
         }
         else {
-            tokens.push_back(token_creator(longest_match.first, input.substr(0, longest_match.second), 0));
+            tokens.push_back(token_creator(longest_match.first, input.substr(0, longest_match.second), 0)); // TODO
         }
         input = input.substr(longest_match.second, input.size() - longest_match.second);
     }
