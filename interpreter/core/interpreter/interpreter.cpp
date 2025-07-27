@@ -1,7 +1,6 @@
 #include "interpreter.h"
 #include <cmath>
 
-
 ReturnValue::ReturnValue() : type(Type::null_type), data(std::nanf("nan")) { }
 
 ReturnValue::ReturnValue(int val) : type(Type::int_type), data(val) { }
@@ -83,7 +82,7 @@ std::shared_ptr<ReturnValue> Context::get_val(std::string var_name) {
 Placeholder printer class, currently this class is quite useless
 */
 void Printer::add_output(std::string text) {
-    output.push_back(text);
+    output.push_back(text + "\n");
 }
 
 void Printer::clear_buffer() {
@@ -132,21 +131,20 @@ std::shared_ptr<ReturnValue> Interpreter::evaluate(
             );
         }
         else if (args_val[0]->get_type() == Type::float_type) {
-            return std::make_shared<ReturnValue>(
-                std::to_string(args_val[0]->as_float())
-            );
+            std::string str_repr = std::to_string(args_val[0]->as_float());
+            str_repr = str_repr.substr(0, str_repr.find(".") + 5);
+            return std::make_shared<ReturnValue>(str_repr);
         }
         else if (args_val[0]->get_type() == Type::bool_type) {
-            return std::make_shared<ReturnValue>(
-                args_val[0]->as_bool() == true ? "true" : "false" 
-            );
+            std::string bool_to_str = (args_val[0]->as_bool() == true ? "true" : "false");
+            return std::make_shared<ReturnValue>(bool_to_str);
         }
         else if (args_val[0]->get_type() == Type::string_type) {
             return args_val[0];
         }
         else if (args_val[0]->get_type() == Type::null_type) {
             return std::make_shared<ReturnValue>(
-                "null"
+                std::string("null")
             ); 
         }
     }
@@ -161,7 +159,11 @@ std::shared_ptr<ReturnValue> Interpreter::evaluate(
                 resultant_type = Type::float_type;
             result += val->as_numerical();
         }
-        return std::make_shared<ReturnValue>(resultant_type == Type::int_type ? int(result) : result);
+        if (resultant_type == Type::int_type) {
+            int result_ = result;
+            return std::make_shared<ReturnValue>(result_); 
+        }
+        return std::make_shared<ReturnValue>(result);
     }
     else if(type == "SubtractionExpr") {
         assert(args_val.size() == 2);
@@ -173,7 +175,11 @@ std::shared_ptr<ReturnValue> Interpreter::evaluate(
                 resultant_type = Type::float_type;
         }
         float result = args_val[0]->as_numerical() - args_val[1]->as_numerical();
-        return std::make_shared<ReturnValue>(resultant_type == Type::int_type ? int(result) : result);
+        if (resultant_type == Type::int_type) {
+            int result_ = result;
+            return std::make_shared<ReturnValue>(result_); 
+        }
+        return std::make_shared<ReturnValue>(result);
     }
     else if(type == "MultiplicationExpr") {
         assert(args_val.size() != 0);
@@ -186,7 +192,11 @@ std::shared_ptr<ReturnValue> Interpreter::evaluate(
                 resultant_type = Type::float_type;
             result *= val->as_numerical();
         }
-        return std::make_shared<ReturnValue>(resultant_type == Type::int_type ? int(result) : result);
+        if (resultant_type == Type::int_type) {
+            int result_ = result;
+            return std::make_shared<ReturnValue>(result_); 
+        }
+        return std::make_shared<ReturnValue>(result);
     }
     else if(type == "DivisionExpr") {
         assert(args_val.size() == 2);
@@ -197,9 +207,13 @@ std::shared_ptr<ReturnValue> Interpreter::evaluate(
             if (v_type == Type::float_type)
                 resultant_type = Type::float_type;
         }
-        assert(fabs(args_val[1]->as_numerical()) < 0.0000001);
+        assert(fabs(args_val[1]->as_numerical()) >= 0.0000001);
         float result = args_val[0]->as_numerical() / args_val[1]->as_numerical();
-        return std::make_shared<ReturnValue>(resultant_type == Type::int_type ? (int)(result) : (float)(result));
+        if (resultant_type == Type::int_type) {
+            int result_ = result;
+            return std::make_shared<ReturnValue>(result_); 
+        }
+        return std::make_shared<ReturnValue>(result);
     }
     else if(type == "GreaterThanExpr") {
         assert(args_val.size() == 2);
@@ -274,30 +288,38 @@ std::shared_ptr<ReturnValue> Interpreter::evaluate(
         return std::make_shared<ReturnValue>((bool)(!result));        
     }
     else if(type == "MinExpr") {
-        assert(args_val.size() == 2);
-        std::shared_ptr<ReturnValue> left_operand = args_val[0];
-        std::shared_ptr<ReturnValue> right_operand = args_val[1];
+        assert(args_val.size() > 0);
         Type resultant_type = Type::int_type;
+        float result = 2e9;
         for(auto val : args_val) {
-            assert(val->is_numerical());
-            if (val->get_type() == Type::float_type)
+            Type v_type = val->get_type();
+            assert(v_type == Type::float_type || v_type == Type::int_type);
+            if (v_type == Type::float_type)
                 resultant_type = Type::float_type;
+            result = std::min(result, val->as_numerical());
         }
-        float result = std::min(left_operand->as_numerical(), right_operand->as_numerical());
-        return std::make_shared<ReturnValue>(resultant_type == Type::int_type ? (int)(result) : (float)(result));
+        if (resultant_type == Type::int_type) {
+            int result_ = result;
+            return std::make_shared<ReturnValue>(result_); 
+        }
+        return std::make_shared<ReturnValue>(result);
     }
     else if(type == "MaxExpr") {
-        assert(args_val.size() == 2);
-        std::shared_ptr<ReturnValue> left_operand = args_val[0];
-        std::shared_ptr<ReturnValue> right_operand = args_val[1];
+        assert(args_val.size() > 0);
         Type resultant_type = Type::int_type;
+        float result = -2e9;
         for(auto val : args_val) {
-            assert(val->is_numerical());
-            if (val->get_type() == Type::float_type)
+            Type v_type = val->get_type();
+            assert(v_type == Type::float_type || v_type == Type::int_type);
+            if (v_type == Type::float_type)
                 resultant_type = Type::float_type;
+            result = std::max(result, val->as_numerical());
         }
-        float result = std::max(left_operand->as_numerical(), right_operand->as_numerical());
-        return std::make_shared<ReturnValue>(resultant_type == Type::int_type ? (int)(result) : (float)(result));        
+        if (resultant_type == Type::int_type) {
+            int result_ = result;
+            return std::make_shared<ReturnValue>(result_); 
+        }
+        return std::make_shared<ReturnValue>(result);   
     }
     else if(type == "AbsExpr") {
         assert(args_val.size() == 1);
@@ -309,7 +331,11 @@ std::shared_ptr<ReturnValue> Interpreter::evaluate(
                 resultant_type = Type::float_type;
         }
         float result = std::fabs(operand->as_numerical());
-        return std::make_shared<ReturnValue>(resultant_type == Type::int_type ? (int)(result) : (float)(result));        
+        if (resultant_type == Type::int_type) {
+            int result_ = result;
+            return std::make_shared<ReturnValue>(result_); 
+        }
+        return std::make_shared<ReturnValue>(result);      
     } 
     else if(type == "ConcatenationExpr") {
         assert(args_val.size() == 2);
