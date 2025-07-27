@@ -16,6 +16,18 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Download Catch2 Amalgamated
+      run: |
+        mkdir -p external/catch2
+        curl -L https://github.com/catchorg/Catch2/releases/download/v3.4.0/catch_amalgamated.hpp -o external/catch2/catch_amalgamated.hpp
+        curl -L https://github.com/catchorg/Catch2/releases/download/v3.4.0/catch_amalgamated.cpp -o external/catch2/catch_amalgamated.cpp
+
+    - name: Download nlohmann/json
+      run: |
+        mkdir -p external/nlohmann
+        curl -L https://github.com/nlohmann/json/releases/download/v3.11.2/json.hpp -o external/nlohmann/json.hpp
+
+
     - name: Install dependencies
       run: sudo apt-get install -y cmake g++ make
 
