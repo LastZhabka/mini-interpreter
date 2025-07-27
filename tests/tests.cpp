@@ -5,7 +5,7 @@
 #include <fstream>
 
 #include "../external/catch2/catch_amalgamated.hpp"
-#include "../external/nlohman/json.hpp"
+#include "../external/nlohmann/json.hpp"
 #include "../src/core/lexer/lexer.h"
 #include "../src/core/interpreter/interpreter.h"
 
