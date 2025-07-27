@@ -53,7 +53,7 @@ std::vector<std::shared_ptr<Token>> Lexer::run(std::string input) {
         }
         else if (longest_match.first == "IntLitToken") {
             std::string value = input.substr(0, longest_match.second);
-            tokens.push_back(token_creator(longest_match.first, 1, 0));//TODO
+            tokens.push_back(token_creator(longest_match.first, std::stoi(value), 0));//TODO
         } 
         else if (longest_match.first == "BoolLitToken") {
             std::string value = input.substr(0, longest_match.second);
@@ -61,7 +61,7 @@ std::vector<std::shared_ptr<Token>> Lexer::run(std::string input) {
         }
         else if (longest_match.first == "FloatLitToken") {
             std::string value = input.substr(0, longest_match.second);
-            tokens.push_back(token_creator(longest_match.first, float(1.0), 0));//TODO
+            tokens.push_back(token_creator(longest_match.first, std::stof(value), 0));//TODO
         }
         else if (longest_match.first == "NullLitToken") {
             tokens.push_back(token_creator(longest_match.first, 0)); //TODO
