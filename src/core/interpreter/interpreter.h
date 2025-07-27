@@ -102,6 +102,8 @@ class Interpreter { // static (?)
         );
 
         std::string interpret(std::string input);
+
+        void repl_iteration(std::string input, std::shared_ptr<Context> context, std::shared_ptr<Printer> printer);
 };
 
 #endif //INTERPRETER_H

@@ -441,3 +441,11 @@ std::string Interpreter::interpret(std::string input) {
     return printer->to_string();
 }
 
+void Interpreter::repl_iteration(std::string input, std::shared_ptr<Context> context, std::shared_ptr<Printer> printer) {
+    std::vector<std::shared_ptr<Token>> tokens = lexer.run(input);
+    std::shared_ptr<Expr> ast_root = parser.parse(tokens);
+    evaluate(ast_root, context, printer);
+    std::cout << printer->to_string();
+    printer->clear_buffer();
+}
+
