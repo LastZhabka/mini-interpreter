@@ -358,7 +358,7 @@ std::shared_ptr<ReturnValue> Interpreter::evaluate(
         std::string replacement_str = replacement->as_string();        
         std::string result;
         for(int i = 0; i < target->as_string().size();) {
-            if(target_str.substr(0, replaced_str.size()) == replaced_str) {
+            if(target_str.substr(i, replaced_str.size()) == replaced_str) {
                 result += replacement_str;
                 i += replaced_str.size();
             }
@@ -377,7 +377,7 @@ std::shared_ptr<ReturnValue> Interpreter::evaluate(
         assert(target->get_type() == Type::string_type);
         assert(left_pos->get_type() == Type::int_type);
         assert(right_pos->get_type() == Type::int_type);
-        std::string result = target->as_string().substr(left_pos->as_int(), right_pos->as_int() - left_pos->as_int() + 1);
+        std::string result = target->as_string().substr(left_pos->as_int(), right_pos->as_int() - left_pos->as_int());
         return std::make_shared<ReturnValue>(result);   
     }
     else if(type == "LowercaseExpr") {
