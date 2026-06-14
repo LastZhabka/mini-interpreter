@@ -12,15 +12,15 @@ class ExprVisitor;
 // Abstract syntax tree
 class Expr {
     private:
-        std::vector<std::shared_ptr<Expr>> target; // Tree structure
+        std::vector<std::shared_ptr<Expr>> children;
     public:
         virtual ~Expr(); //  = default
 
         virtual void accept(std::shared_ptr<ExprVisitor> visitor) = 0;
 
-        std::vector<std::shared_ptr<Expr>> get_kids();
+        std::vector<std::shared_ptr<Expr>> get_children();
 
-        void reassign_children(std::vector<std::shared_ptr<Expr>> target_);
+        void reassign_children(std::vector<std::shared_ptr<Expr>> new_children);
 
         void modify(int index, std::shared_ptr<Expr> elem);
 
@@ -35,7 +35,7 @@ class Expr {
 class PutsExpr : public Expr {
     private:
     public:
-        PutsExpr(std::shared_ptr<Expr> target);
+        PutsExpr(std::shared_ptr<Expr> operand);
 
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
@@ -123,7 +123,7 @@ class MaxExpr : public Expr{
 class AbsExpr : public Expr{
     private:
     public:
-        AbsExpr(std::shared_ptr<Expr> target);
+        AbsExpr(std::shared_ptr<Expr> operand);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
@@ -141,7 +141,7 @@ class SetExpr : public Expr{
 class ToStrExpr : public Expr {
     private:
     public:
-        ToStrExpr(std::shared_ptr<Expr> target);
+        ToStrExpr(std::shared_ptr<Expr> operand);
 
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
@@ -157,7 +157,7 @@ class ConcatExpr : public Expr{
 class ReplaceExpr : public Expr{
     private:
     public:
-        ReplaceExpr(std::shared_ptr<Expr> source, std::shared_ptr<Expr> target, std::shared_ptr<Expr> ReplaceExpr);
+        ReplaceExpr(std::shared_ptr<Expr> source, std::shared_ptr<Expr> pattern, std::shared_ptr<Expr> replacement);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
@@ -173,7 +173,7 @@ class SubstrExpr : public Expr{
 class LowercaseExpr : public Expr{
     private:
     public:
-        LowercaseExpr(std::shared_ptr<Expr> target);
+        LowercaseExpr(std::shared_ptr<Expr> operand);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };
@@ -181,7 +181,7 @@ class LowercaseExpr : public Expr{
 class UppercaseExpr : public Expr{
     private:
     public:
-        UppercaseExpr(std::shared_ptr<Expr> target);
+        UppercaseExpr(std::shared_ptr<Expr> operand);
         
         void accept(std::shared_ptr<ExprVisitor> visitor) override;
 };

@@ -106,7 +106,7 @@ std::shared_ptr<ReturnValue> Interpreter::evaluate(
 ) {
     std::shared_ptr<ExprTypeVisitor> expr_type_visitor = std::make_shared<ExprTypeVisitor>();
     std::string type = expr_type_visitor->get_type(expr, expr_type_visitor);
-    std::vector<std::shared_ptr<Expr>> args = expr->get_kids();
+    std::vector<std::shared_ptr<Expr>> args = expr->get_children();
     std::vector<std::shared_ptr<ReturnValue>> args_val;
     if(type == "SetExpr") {
         assert(args.size() == 2);

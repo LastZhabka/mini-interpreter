@@ -232,7 +232,7 @@ std::shared_ptr<Expr> build_ast(std::shared_ptr<Expr> expr) {
         return expr;
 
 
-    vector<shared_ptr<Expr>> children_exprs = expr->get_kids();
+    vector<shared_ptr<Expr>> children_exprs = expr->get_children();
     vector<shared_ptr<Expr>> new_children_exprs;
 
     shared_ptr<ParserTempTypeVisitor> visitor = make_shared<ParserTempTypeVisitor>();
@@ -249,9 +249,9 @@ std::shared_ptr<Expr> build_ast(std::shared_ptr<Expr> expr) {
     if (expr_type == "(Program)" || expr_type == "(Params)") {
         assert(children_exprs.size() == 2);
         if (new_children_exprs.size() == 2) {
-            vector<shared_ptr<Expr>> target = new_children_exprs[1]->get_kids();
+            vector<shared_ptr<Expr>> children = new_children_exprs[1]->get_children();
             new_children_exprs.pop_back();
-            for (auto u : target) {
+            for (auto u : children) {
                 new_children_exprs.push_back(u);
             }
         }
@@ -269,7 +269,7 @@ std::shared_ptr<Expr> build_ast(std::shared_ptr<Expr> expr) {
             return new_children_exprs[0];
         }
         assert(new_children_exprs.size() == 2);
-        new_children_exprs[0]->reassign_children(new_children_exprs[1]->get_kids());
+        new_children_exprs[0]->reassign_children(new_children_exprs[1]->get_children());
         return new_children_exprs[0];
     }
     else if (expr_type == "()") {
@@ -285,7 +285,7 @@ std::shared_ptr<Expr> build_ast(std::shared_ptr<Expr> expr) {
 int number_nodes(std::shared_ptr<Expr> v) {
     if (v == nullptr) return 0;
     int answ = 1;
-    for(auto u : v->get_kids()) {
+    for(auto u : v->get_children()) {
         answ += number_nodes(u);
     }
     return answ;

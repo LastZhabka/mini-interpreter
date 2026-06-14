@@ -8,20 +8,20 @@
 
 Expr::~Expr() = default;
 
-std::vector<std::shared_ptr<Expr>> Expr::get_kids() {
-    return target;
+std::vector<std::shared_ptr<Expr>> Expr::get_children() {
+    return children;
 }
 
 void Expr::push_back(std::shared_ptr<Expr> element) {
-    target.push_back(element);
+    children.push_back(element);
 }
 
 void Expr::modify(int index, std::shared_ptr<Expr> elem) {
-    target[index] = elem;
+    children[index] = elem;
 }
 
-void Expr::reassign_children(std::vector<std::shared_ptr<Expr>> target_) {
-    target = target_;
+void Expr::reassign_children(std::vector<std::shared_ptr<Expr>> new_children) {
+    children = new_children;
 }
 
 
@@ -33,7 +33,7 @@ void Expr::visualize(int tabs) {
         result += "|    ";
     result += to_string_visitor->get_to_string(this, to_string_visitor);
     std::cout << result << "\n";
-    for(auto kid : this->get_kids()) {
+    for(auto kid : this->get_children()) {
         kid->visualize(tabs + 1);
     }
 }
@@ -42,12 +42,12 @@ void Expr::visualize(int tabs) {
 // CONSTRUCTORS
 
 
-PutsExpr::PutsExpr(std::shared_ptr<Expr> target) {
-    this->push_back(target);
+PutsExpr::PutsExpr(std::shared_ptr<Expr> operand) {
+    this->push_back(operand);
 }
 
-ToStrExpr::ToStrExpr(std::shared_ptr<Expr> target) {
-    this->push_back(target);
+ToStrExpr::ToStrExpr(std::shared_ptr<Expr> operand) {
+    this->push_back(operand);
 }
 
 ErrorExpr::ErrorExpr(std::string value) : value(value) { }
@@ -106,8 +106,8 @@ MaxExpr::MaxExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
     this->push_back(rhs);
 }
 
-AbsExpr::AbsExpr(std::shared_ptr<Expr> target) {
-    this->push_back(target);
+AbsExpr::AbsExpr(std::shared_ptr<Expr> operand) {
+    this->push_back(operand);
 }
 
 SetExpr::SetExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
@@ -120,9 +120,9 @@ ConcatExpr::ConcatExpr(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs) {
     this->push_back(rhs);
 }
 
-ReplaceExpr::ReplaceExpr(std::shared_ptr<Expr> source, std::shared_ptr<Expr> target, std::shared_ptr<Expr> replacement) {
+ReplaceExpr::ReplaceExpr(std::shared_ptr<Expr> source, std::shared_ptr<Expr> pattern, std::shared_ptr<Expr> replacement) {
     this->push_back(source);
-    this->push_back(target);
+    this->push_back(pattern);
     this->push_back(replacement);
 }
 
@@ -132,12 +132,12 @@ SubstrExpr::SubstrExpr(std::shared_ptr<Expr> source, std::shared_ptr<Expr> l, st
     this->push_back(r);
 }
 
-LowercaseExpr::LowercaseExpr(std::shared_ptr<Expr> target) {
-    this->push_back(target);
+LowercaseExpr::LowercaseExpr(std::shared_ptr<Expr> operand) {
+    this->push_back(operand);
 }
 
-UppercaseExpr::UppercaseExpr(std::shared_ptr<Expr> target) {
-    this->push_back(target);
+UppercaseExpr::UppercaseExpr(std::shared_ptr<Expr> operand) {
+    this->push_back(operand);
 }
 
 IdentifierExpr::IdentifierExpr(std::string name) : name(name) { }
