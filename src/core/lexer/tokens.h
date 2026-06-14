@@ -20,7 +20,7 @@ public:
     int get_position();
 };
 
-template <typename T, int type_name>
+template <typename T, int type_id>
 class GenericToken : public Token {
 private:
     T data;
@@ -34,24 +34,24 @@ public:
     std::string to_string() override;
 };
 
-template<typename T, int type_name>
-GenericToken<T, type_name>::GenericToken(T value, int position) : Token(position), data(value)  {}
+template<typename T, int type_id>
+GenericToken<T, type_id>::GenericToken(T value, int position) : Token(position), data(value)  {}
 
-template<typename T, int type_name>
-GenericToken<T, type_name>::~GenericToken() {}
+template<typename T, int type_id>
+GenericToken<T, type_id>::~GenericToken() {}
 
-template<typename T, int type_name>
-T GenericToken<T, type_name>::get_value() {
+template<typename T, int type_id>
+T GenericToken<T, type_id>::get_value() {
     return data;
 }
 
-template<typename T, int type_name>
-std::string GenericToken<T, type_name>::get_type() {
-    return id_to_token_name[type_name];
+template<typename T, int type_id>
+std::string GenericToken<T, type_id>::get_type() {
+    return id_to_token_name[type_id];
 }
 
-template<typename T, int type_name>
-std::string GenericToken<T, type_name>::to_string() {
+template<typename T, int type_id>
+std::string GenericToken<T, type_id>::to_string() {
     std::string result;
     if constexpr((std::is_same_v<T, std::string>)) {
         result = this->get_type() + "(" + data + ")";
@@ -66,7 +66,7 @@ std::string GenericToken<T, type_name>::to_string() {
     // + "(" + std::to_string(get_position()) + ")";
 }   
 
-template <int type_name>
+template <int type_id>
 class EmptyToken : public Token {
 public:
     EmptyToken(int position);
@@ -74,16 +74,16 @@ public:
     std::string get_type() override;
 };
 
-template<int type_name>
-EmptyToken<type_name>::EmptyToken(int position) : Token(position) { }
+template<int type_id>
+EmptyToken<type_id>::EmptyToken(int position) : Token(position) { }
 
-template<int type_name>
-std::string EmptyToken<type_name>::get_type() {
-    return id_to_token_name[type_name];
+template<int type_id>
+std::string EmptyToken<type_id>::get_type() {
+    return id_to_token_name[type_id];
 }
 
-template<int type_name>
-std::string EmptyToken<type_name>::to_string() {
+template<int type_id>
+std::string EmptyToken<type_id>::to_string() {
     std::string result = this->get_type() + "()";
     return result; 
     //+ (" + std::to_string(get_position()) +")";
@@ -102,10 +102,6 @@ using NullLitToken = EmptyToken<8>;
 using SpaceToken = EmptyToken<9>;
 using EOFToken = EmptyToken<10>;
 
-// Useless?
-//using EOFToken = EmptyToken; 
-//using OperatorToken
-//using PrimTypeToken = GenericToken<string>;
 
 class TokenCreator {
 public:

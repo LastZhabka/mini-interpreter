@@ -1,11 +1,12 @@
 #include <regex>
 #include <cassert>
+#include <stdexcept>
 #include <iostream>
 #include "lexer.h"
 #include "tokens.h"
 
 
-Rule::Rule(std::regex premise, std::string token_type) : premise(premise), token_type(token_type) {
+Rule::Rule(std::regex premise, std::string token_type) : premise(std::move(premise)), token_type(std::move(token_type)) {
     return;
 }
 
@@ -22,7 +23,7 @@ Lexer::Lexer() {
     lexer_rules.push_back(Rule(std::regex("^(\\(|\\))"), "DelimiterToken"));
     
     std::regex keywords("^((add)|(set)|(puts)|(concat)|(lowercase)"
-                    "|(uppercase)|(lowercase)|(replace)"
+                    "|(uppercase)|(replace)"
                     "|(substring)|(subtract)|(multiply)"
                     "|(divide)|(abs)|(min)|(max)|(gt)|(lt)|(equal)|(not_equal)|(str))");
     lexer_rules.push_back(Rule(keywords, "KeywordToken"));
@@ -41,48 +42,52 @@ std::vector<std::shared_ptr<Token>> Lexer::run(std::string input) {
     // works in O(|Rules| * n^2), we can do it faster
     std::vector<std::shared_ptr<Token>> tokens;  
     while(input.size()) {
-        std::pair<std::string, int> longest_match = {"None", -1};
-        for(auto rule : lexer_rules) {
+        std::string longest_match_name = "None";
+        int longest_match_size = -1;
+        for(auto& rule : lexer_rules) {
             std::smatch rule_match;
-            if (regex_search(input, rule_match, rule.get_regex()) && int(rule_match.str().size()) > longest_match.second) {
-                longest_match = make_pair(rule.get_token_type(), rule_match.str().size());
+            if (regex_search(input, rule_match, rule.get_regex(), std::regex_constants::match_continuous) 
+                && int(rule_match.length()) > longest_match_size) {
+                longest_match_name = rule.get_token_type();
+                longest_match_size = rule_match.length();
             }
         }
-        if (longest_match.first == "None") {
-            assert(0);
-        }
-        else if (longest_match.first == "IntLitToken") {
-            std::string value = input.substr(0, longest_match.second);
-            tokens.push_back(token_creator(longest_match.first, std::stoi(value), 0));//TODO
+        if (longest_match_name == "None")
+            throw std::runtime_error("Incorrect program.");
+        
+        
+        if (longest_match_name  == "IntLitToken") {
+            std::string value = input.substr(0, longest_match_size);
+            tokens.push_back(token_creator(longest_match_name , std::stoi(value), 0));//TODO
         } 
-        else if (longest_match.first == "BoolLitToken") {
-            std::string value = input.substr(0, longest_match.second);
-            tokens.push_back(token_creator(longest_match.first, bool(value == "true"), 0));//TODO
+        else if (longest_match_name  == "BoolLitToken") {
+            std::string value = input.substr(0, longest_match_size);
+            tokens.push_back(token_creator(longest_match_name , bool(value == "true"), 0));//TODO
         }
-        else if (longest_match.first == "FloatLitToken") {
-            std::string value = input.substr(0, longest_match.second);
-            tokens.push_back(token_creator(longest_match.first, std::stof(value), 0));//TODO
+        else if (longest_match_name  == "FloatLitToken") {
+            std::string value = input.substr(0, longest_match_size);
+            tokens.push_back(token_creator(longest_match_name , std::stof(value), 0));//TODO
         }
-        else if (longest_match.first == "NullLitToken") {
-            tokens.push_back(token_creator(longest_match.first, 0)); //TODO
+        else if (longest_match_name  == "NullLitToken") {
+            tokens.push_back(token_creator(longest_match_name , 0)); //TODO
         }
-        else if (longest_match.first == "StringLitToken") {
-            tokens.push_back(token_creator(longest_match.first, input.substr(1, longest_match.second - 2), 0)); // TODO    
+        else if (longest_match_name  == "StringLitToken") {
+            tokens.push_back(token_creator(longest_match_name , input.substr(1, longest_match_size - 2), 0)); // TODO    
         }        
-        else if(longest_match.first == "SpaceToken") {
+        else if(longest_match_name  == "SpaceToken") {
             if(tokens.size() && tokens.back()->get_type() != "SpaceToken") {
-                tokens.push_back(token_creator(longest_match.first, 0)); //TODO
+                tokens.push_back(token_creator(longest_match_name , 0)); //TODO
             }
         }
         else {
-            tokens.push_back(token_creator(longest_match.first, input.substr(0, longest_match.second), 0)); // TODO
+            tokens.push_back(token_creator(longest_match_name , input.substr(0, longest_match_size), 0)); // TODO
         }
-        input = input.substr(longest_match.second, input.size() - longest_match.second);
+
+        input = input.substr(longest_match_size, input.size() - longest_match_size);
     }
     while(tokens.size() && tokens.back()->get_type() == "SpaceToken")
         tokens.pop_back();
     tokens.push_back(token_creator("EOFToken", 0)); // Add EOF Token at the end
-    
     return tokens;
 }
 
